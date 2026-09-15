@@ -44,7 +44,7 @@ Community documentation of the DwarfLab Dwarf II smart telescope software intern
 | Partition | Mount | Size | Notes |
 |-----------|-------|------|-------|
 | `/dev/root` | `/` | 440MB | Root filesystem, 73% full |
-| `/dev/mmcblk2p1` | `/mnt/sdcard` | 60GB | SD card — user images stored here |
+| `/dev/mmcblk2p1` | `/mnt/sdcard` | XGB | SD card — user images stored here |
 | `/dev/mmcblk0p8` | `/oem` | 2.0GB | DwarfLab application and assets |
 | `/dev/mmcblk0p9` | `/userdata` | 3.9GB | User data partition |
 
