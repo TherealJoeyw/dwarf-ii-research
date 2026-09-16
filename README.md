@@ -44,6 +44,8 @@ For developers, the sections below document the hardware, running software, netw
 
 **SOC:** Rockchip RV1126, identified from the hostname `RV1126_RV1109` visible on the network.
 
+> Note: the hostname RV1126_RV1109 appears on the network because both chips share the same firmware image. The Dwarf II uses the RV1126 specifically, confirmed by the 2.0 TOPS NPU output from rknn_server — the RV1109 only has 1.2 TOPS.
+
 | Component | Details |
 |-----------|---------|
 | CPU | Quad-core ARM Cortex-A7 @ 1.5GHz + RISC-V MCU @ 400MHz |
