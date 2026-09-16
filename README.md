@@ -2,7 +2,7 @@
 
 Community documentation of the DwarfLab Dwarf II smart telescope internals, gathered via SSH and network analysis. The goal is to give developers building third-party tools a clear picture of what is running on the device and how to talk to it.
 
-> **Note:** The Dwarf II ships with default credentials and an open network interface that makes it easy to access and extend. See the [Default Credentials](#default-credentials) section for details.
+> **Note:** The Dwarf II ships with default credentials and an open network interface that makes it easy to access and extend. However this is also a security vulnerability on public Wi-Fi networks. See the [Default Credentials](#default-credentials) section for details.
 
 ---
 
