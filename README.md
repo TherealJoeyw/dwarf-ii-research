@@ -139,7 +139,7 @@ These files represent DwarfLab's proprietary sensor tuning and are not redistrib
 
 ### SD card layout
 
-The SD card is mounted at `/mnt/sdcard/`. Images are stored under `/mnt/sdcard/DWARF_II/`. Note that the folder structure changed between firmware versions — sessions from older firmware use a flat layout at the SD card root; newer sessions use the `DWARF_II/` subdirectory.
+The SD card is mounted at `/mnt/sdcard/`. Images are stored under `/mnt/sdcard/DWARF_II/`.
 
 Each capture is stored twice — once for the telephoto camera (`DWARF_TELE_*`) and once for the wide angle (`DWARF_WIDE_*`) — plus a Thumbnail copy, so effectively three copies of every image.
 
