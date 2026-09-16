@@ -240,8 +240,11 @@ Rockchip maintain an official model zoo at [airockchip/rknn_model_zoo](https://g
 The Dwarf II ships with the same default credentials on every unit, which is what makes it so easy to access and extend. The main thing to be aware of is that you should not connect it to public WiFi in STA mode (hotel networks, coffee shop WiFi etc.), since other devices on that network could access the telescope. Using the telescope's own hotspot is fine since you control the password.
 
 **Default WiFi hotspot SSID:** `DWARF_<last 6 of MAC>` (unique per device)
+
 **Default WiFi hotspot password:** `DWARF_12345678` (same on every unit)
+
 **Default SSH credentials:** `root` / `rockchip` (same on every unit)
+
 **FTP:** anonymous login, no password required
 
 The hotspot password can be changed in the app under Settings > Device Password, which also updates the Bluetooth password. The SSH root password can be changed with `passwd` over SSH. Neither is required for normal use on a home network.
