@@ -106,6 +106,8 @@ For developers, the sections below document the hardware, running software, netw
 
 These are SiamRPN (Siamese Region Proposal Network) models. The binary also references YOLO v5/v6/v7/v8 support. Inference runs at 50-70 FPS on the NPU via `rknn_inference`.
 
+SiamRPN works by running two parallel neural networks one processes a template of the target object captured when tracking begins, the other processes each new camera frame. The outputs are compared to locate the target and produce a bounding box. The model is split into separate files because the template branch only needs to run once, while the search and RPN branches run on every frame.
+
 **`/oem/etc/iqfiles/`** — ISP image quality tuning files
 - `imx415_YT10092_IR0147-28IRC-8M-F20.xml` — full ISP tuning for the Sony IMX415 in normal mode, including noise reduction curves, colour correction matrices, gamma tables, sharpening parameters, white balance coefficients, and exposure control curves
 - `binning/imx415_YT10092_IR0147-28IRC-8M-F20.xml` — same tuning for 2x2 binning mode, used during astrophotography
