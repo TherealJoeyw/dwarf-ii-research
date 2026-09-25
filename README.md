@@ -129,7 +129,7 @@ These files represent DwarfLab's proprietary sensor tuning and are not redistrib
 - `wpa_supplicant.conf` — WiFi connection config
 - `zlog.conf` — logging configuration
 
-**`/userdata/dark/`** — dark frame calibration images, covering gain values 30-150 at 15s exposure
+**`/userdata/dark/`** — dark frame calibration images
 
 **`/userdata/www/`** — nginx web root. Contains a single `index.html` saying "Success". Replace with your own HTML to host a custom web interface that survives reboots. Firmware updates may overwrite this folder, so you would need to re-deploy after updating.
 
