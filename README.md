@@ -164,20 +164,20 @@ Deleting images in the DwarfLab app does not reliably remove them from the SD ca
 | 80 | TCP | HTTP (nginx) | Web interface and SD card browser |
 | 1935 | TCP | RTMP | Live video — unconfirmed, see below |
 | 5037 | TCP | ADB | Localhost only |
-| 5555 | TCP | Control API | WebSocket, protobuf |
+| 5555 | TCP | Control API | WebSocket, protocol unconfirmed |
 | 8082 | TCP | Unknown | HTTP, returns 404 on root |
 | 8092 | TCP | Unknown | Likely WebSocket |
 | 9900 | TCP/UDP | Control API | WebSocket — confirmed in binary strings |
 
 ### WebSocket control API
 
-The main control API runs on port 9900 over WebSocket with binary protobuf encoding:
+The main control API runs on port 9900 over WebSocket with JSON messages:
 
 ```
 ws://192.168.X.X:9900
 ```
 
-Messages use a `WsPacket` wrapper with `cmd` and `data` fields. A keep-alive is required: send both a WebSocket ping frame and a `"ping"` text message; the device responds with `"pong"`.
+Messages use a JSON `WsPacket` wrapper with `cmd` and `data` fields. A keep-alive is required: send both a WebSocket ping frame and a `"ping"` text message; the device responds with `"pong"`.
 
 See [DwarfTelescopeUsers](https://github.com/DwarfTelescopeUsers) and [stevejcl/dwarf_python_api](https://github.com/stevejcl/dwarf_python_api) for community API documentation and Python bindings.
 
@@ -266,7 +266,8 @@ This is a community effort. PRs and issues are welcome. If you find something no
 ## Related projects
 
 - [DwarfTelescopeUsers](https://github.com/DwarfTelescopeUsers) — community GitHub organisation
-- [stevejcl/dwarf_python_api](https://github.com/stevejcl/dwarf_python_api) — Python API library
+- [stevejcl/dwarf_test_apiV2](https://github.com/stevejcl/dwarf_test_apiV2) — Python test program for API V2
+- [DwarfTelescopeUsers/dwarfii_api](https://github.com/DwarfTelescopeUsers/dwarfii_api) — JavaScript API wrapper library (V1)
 - [stevejcl/dwarfium](https://github.com/stevejcl/dwarfium) — Stellarium integration
 - [grosseruser/dwarf2-html](https://github.com/grosseruser/dwarf2-html) — web frontend for the Dwarf II
 - [airockchip/rknn_model_zoo](https://github.com/airockchip/rknn_model_zoo) — pre-converted RKNN models ready to run on the NPU
