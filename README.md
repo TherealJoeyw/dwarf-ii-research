@@ -179,7 +179,7 @@ ws://192.168.X.X:9900
 
 Messages use a JSON `WsPacket` wrapper with `cmd` and `data` fields. A keep-alive is required: send both a WebSocket ping frame and a `"ping"` text message; the device responds with `"pong"`.
 
-See [DwarfTelescopeUsers](https://github.com/DwarfTelescopeUsers) and [stevejcl/dwarf_python_api](https://github.com/stevejcl/dwarf_python_api) for community API documentation and Python bindings.
+See [DwarfTelescopeUsers](https://github.com/DwarfTelescopeUsers) and [stevejcl/dwarf_test_apiV2](https://github.com/stevejcl/dwarf_test_apiV2) for community API documentation and Python bindings.
 
 ### HTTP API routes
 
