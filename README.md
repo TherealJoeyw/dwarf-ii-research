@@ -1,16 +1,127 @@
 # Dwarf II Software Internals
 
-Community documentation of the DwarfLab Dwarf II smart telescope internals, gathered via SSH and network analysis. The goal is to give developers building third-party tools a clear picture of what is running on the device and how to talk to it.
+ Documentation of the DwarfLab Dwarf II smart telescope internals, gathered via SSH and network analysis. The goal is to give developers building third-party tools a clear picture of what is running on the device and how to talk to it.
 
 This page was written with the assistance of anthropic's Claude sonnet 4.6 model however I manually reviewed it , as you can see by the edit history 
 
-> **Note:** The Dwarf II ships with default credentials and an open network interface that makes it easy to access and extend. However this is also a security vulnerability on public Wi-Fi networks. See the [Default Credentials](#default-credentials) section for details.
+Last updated: September 26th 2026
 
----
+> **Note:** The Dwarf II ships with default credentials and an open network interface that makes it easy to access and extend. However this is also a security vulnerability. See the [Default Credentials](#default-credentials) section and the below dropdown for details.
+
+<details>
+<summary>⚠️ IMPORTANT — Plain English Security Information — please read before use</summary>
+
+## How secure is the Dwarf II?
+
+### Assume anyone within about 50 metres of you has the same level of access to your telescope as you do. That is roughly the security situation with the default settings.
+### It is also worth knowing that the level of access available to anyone on the same network could, in theory, be used to remotely and permanently damage the device beyond repair ,not something the researcher has done or recommends in any way, but a real potential consequence of leaving the default settings unchanged.
+
+The telescope creates its own WiFi network with a password that is identical on every Dwarf II ever sold. If someone nearby knows that password , and it was publicly available online even before I made this repository, they can connect to your telescope without you knowing. Once connected they can see everything on the SD card, take control of the motors and camera, and in some configurations retrieve the password to every WiFi network it has been connected to since it was last factory reset.
+
+If you plug it into your home network instead of using its own hotspot, anyone else already on that network has the same access. This includes family members, housemates, and any guests you have given your WiFi password to.
+
+The built-in remote access tools use the same login details on every unit worldwide. There is no notification or log entry that would tell you if someone else had connected, however this repository contains information that could assist in the creation of such a notification tool.
+
+**What you should do:**
+
+- Open the DwarfLab app, go to Me > My Device > Device Password, and change the device password to something longer than 8 letters and/or numbers before you use it anywhere outside your home
+- Do not connect it to public WiFi, hotel WiFi, or any shared network.
+- If you take it to a star party or any public event, assume the default password is known to other people there and change it first.
+- If you do connect it to your home network, be aware that this is less secure than using its own hotspot
+
+</details>
+
+<details>
+<summary>Legal notices</summary>
+
+For the purposes of this document, "the researcher" , "the author" and similar terms refer to Z.A. Whyman / J.A. Whyman (ORCID: [0009-0004-1895-0968](https://orcid.org/0009-0004-1895-0968)).
+
+### Jurisdiction and applicable law
+
+This research was conducted in England and Wales and is governed by English law.
+
+### Interoperability research
+
+This repository contains original interoperability research conducted under Section 50B of the Copyright, Designs and Patents Act 1988 (CDPA), which permits decompilation of a computer program for the purpose of obtaining information necessary to create an independent program capable of interoperability with it. Any contract terms that try to ban or restrict permitted decompilation are void under Section 296A of the Act. The decompilation was limited to obtaining interface information and did not exceed what was necessary for that purpose. The information obtained has not been used for any purpose other than the creation and facilitation of the creation of interoperable software, and has not been supplied to any third party except as permitted under Section 50B(3). This research is also consistent with Article 6 of EU Directive 2009/24/EC on the legal protection of computer programs and its UK retained equivalent.
+
+### Ownership and authorisation
+
+All research was conducted on a device lawfully acquired and owned by the researcher. Network interface analysis was conducted exclusively on a private network and device under the researcher's own control or one that the author is lawfully authorised to use. No third-party devices, networks, or accounts were unlawfully accessed at any time. No circumvention of access controls was required or performed. All interfaces documented here are accessible using the device's default factory configuration as shipped by the manufacturer or when settings are changed in the app.
+
+### Permitted acts
+
+Section 50A CDPA permits the making of back-up copies of lawfully obtained software. Section 296ZE CDPA preserves permitted acts in relation to technical measures and prevents copyright owners from using technological protection measures to prevent lawful acts including those permitted under Section 50B. This research falls within these permitted acts.
+
+### Use of AI assistance
+
+This research was conducted with the assistance of Claude (Sonnet 4.6), a large language model developed by Anthropic. Claude assisted with interpretation of decompiled code, protocol analysis, Python scripting, and drafting of this documentation. All findings were verified by the researcher through direct empirical testing on the device. The researcher takes full responsibility for the accuracy of the content.
+
+The use of AI assistance in research and documentation does not, in the researcher's view, affect the legal status of this work. The interoperability permissions under Section 50B CDPA attach to the person lawfully entitled to use the program, not to the tools used in the analysis. The researcher is that person and directed the analysis throughout. Output generated with AI assistance is not currently afforded copyright protection in the UK under the Intellectual Property Office's current guidance, meaning the documentation in this repository is either owned by the researcher as author of the overall work or exists without copyright protection — in either case it is freely available for use. Anthropic's terms of service permit use of Claude for research and documentation tasks of this nature.
+
+### No proprietary assets redistributed
+
+No proprietary source code, compiled binaries, firmware images, or other copyrighted assets belonging to DwarfLab, Tinyphoton Ltd, Rockchip, or any other party other than the author are reproduced or redistributed in this repository. Command numbers, field names, and protobuf schema information derived from decompilation are reproduced only to the extent necessary to document communication interfaces for interoperability purposes.
+
+### Database rights
+
+Star catalogue index files present on the Dwarf 2 device and mobile application (index-4110.fits, index-4111.fits) may be protected as databases under the Copyright and Rights in Databases Regulations 1997. These files are not reproduced or redistributed in this repository. Their existence, location, and purpose are documented for interoperability purposes only.
+
+### Moral rights
+
+The firmware build strings embedded in the shipped firmware incidentally reveal the names of individuals involved in its compilation. These names are reproduced in this repository only as factual technical information necessary for accurate documentation of the firmware's provenance. No identification claim is made against those individuals under Section 77 CDPA, and no derogatory treatment of their work is intended or implied under Section 80 CDPA.
+
+### Trade secrets
+
+The information documented in this repository was obtained through lawful and non-destructive, computational and physical interface with a device owned by the researcher and through decompilation permitted under Section 50B CDPA. No information was obtained through any breach of confidence, misappropriation, or any act that would constitute unlawful acquisition under the Trade Secrets (Enforcement, etc.) Regulations 2018. The researcher did not have access to any information belonging to DwarfLab, Tinyphoton Ltd or any associated entity beyond what was discoverable through lawful analysis of the shipped product, the software contained within it, its associated Android mobile phone application, and information already lawfully public on the internet as of *26th September 2026*.
+
+### Intellectual property exhaustion
+
+Under the doctrine of exhaustion of intellectual property rights, DwarfLab's and Tinyphoton Ltd's intellectual property rights in the software installed on the device are exhausted with respect to the researcher's lawful use of that copy following its sale. The SSH access, network analysis, and runtime observation documented here constitute use of a lawfully purchased copy and do not infringe any intellectual property right that has not been exhausted by the first sale.
+
+### Security disclosures
+
+This documentation does not constitute a formal security advisory. Vulnerabilities and security-relevant behaviours noted in this repository (including but not limited to: SSH root access with default credentials common to all units, plaintext storage and logging of WiFi credentials, unauthenticated REST API access, and FTP anonymous read access to the SD card) are described accurately as behaviours present in the device's default shipped configuration. These behaviours were not introduced by this research. The researcher did not exploit these vulnerabilities against any third party.
+
+## The author recommends that DwarfLab review the security posture of the device's default network configuration. The specific remediation approach is left to DwarfLab's discretion, however the author suggests that a developer mode or per-interface toggle behind an appropriate warning screen in the phone app would strike a reasonable balance between improving security for general consumers without removing the legitimate ability of technically capable owners to access their own devices. The Dwarf II is an excellent hardware platform and the author believes a thriving open source third-party software ecosystem would be of significant benefit to both the community and to DwarfLab . The author respectfully requests that any security measures taken do not prevent the creation of third-party interface and control software, and remain consistent with owners' rights under Section 50B CDPA and the right to repair principles outlined above.
+
+### Public interest
+
+The security findings documented in this repository are published in the public interest. Purchasers of the Dwarf II have a legitimate interest in understanding the security posture of a networked device operating on their home network and connecting to their personal devices. Publication of accurate factual information about a matter of public interest is a defence to any claim in defamation under Section 4 of the Defamation Act 2013. The researcher believes all statements of fact in this repository to be true and has taken reasonable care to verify them.
+
+### Acknowledgement request
+
+If DwarfLab or Tinyphoton Ltd address any of the security issues documented in this repository in a future firmware release, the researcher requests acknowledgement in the relevant release notes or security advisory as the original documenting researcher. Contact: Z.A. Whyman, ORCID [0009-0004-1895-0968](https://orcid.org/0009-0004-1895-0968). 
+
+### Unjust enrichment
+
+The researcher reserves the right to seek acknowledgement for any findings, methodologies, or documented interfaces from this repository that are incorporated into official DwarfLab or Tinyphoton Ltd products, documentation, or firmware releases. Incorporation of this research into a commercial product without acknowledgement may give rise to a claim in unjust enrichment under the English common law doctrine of unjust enrichment, as developed in *Lipkin Gorman v Karpnale Ltd* [1991] 2 AC 548 and *Benedetti v Sawiris* [2013] UKSC 50.
+*(In plain English: British law says that if DwarfLab or anyone associated with them benefits from this research, they are supposed to credit me.)*
+
+### Public interest and responsible disclosure
+
+This research serves a public interest function consistent with the principles of responsible disclosure recognised by the UK National Cyber Security Centre (NCSC) and the Information Commissioner's Office (ICO). The vulnerabilities documented here were not exploited against any third party. The researcher has not been contacted by DwarfLab or Tinyphoton Ltd regarding these findings prior to publication. Publication is in the public interest as it enables purchasers of the Dwarf II to make informed decisions about the security posture of a networked device operating on their home network.
+
+### Cyber Resilience Act
+
+The security issues documented in this repository — including default credentials common to all units, plaintext storage and logging of WiFi credentials, and unauthenticated network APIs — are directly relevant to manufacturers' obligations under the EU Cyber Resilience Act (Regulation (EU) 2024/2847), which imposes security requirements on manufacturers of products with digital elements placed on the EU market. The researcher believes publication of these findings serves the accountability purposes of the CRA and any equivalent UK legislation. Nothing in this repository constitutes legal advice regarding DwarfLab's or Tinyphoton Ltd's compliance obligations.
+
+### Right to repair
+
+This research is consistent with the principles underlying the EU Right to Repair Directive (Directive (EU) 2024/1799) and emerging UK right to repair policy, which support the right of owners to access, understand, and maintain the devices they have purchased. Documenting the software interfaces of a lawfully owned device for the purpose of building interoperable tools and maintaining independent access to its functions is precisely the kind of activity these frameworks are designed to protect.
+
+### Disclaimer
+
+This repository is provided for educational and interoperability purposes only. The researcher accepts no liability for any damage, data loss, or other consequences arising from use of the information contained herein. Use of this information to access devices you do not own or have permission to access may constitute an offence under the Computer Misuse Act 1990.
+
+# (In plain English: what I did here is not only legal but actively encouraged under UK and EU law.)
+
+</details>
+
+
 
 ## What can I do with this?
 
-You do not need to be a developer to get something useful out of this. Here are some things anyone can do with a Dwarf II beyond the official app:
+You do not need to be an embedded linux developer to get something useful out of this. Here are some things anyone could do with a Dwarf II beyond the official app:
 
 **Browse and download your photos without the app**
 Open a web browser on any device connected to the same network as your telescope and go to `http://192.168.X.X/sdcard/` (replace with your telescope's IP). You will see all your captured images and can download them directly.
@@ -19,7 +130,7 @@ Open a web browser on any device connected to the same network as your telescope
 The Dwarf II has pan/tilt motors and a decent sensor. You can point it at a bird feeder, a garden, or anything else and control it remotely from your phone via the DwarfLab app. No astronomy required.
 
 **Host a custom web interface**
-nginx is already running and serving files from `/userdata/www/`. The default page at `http://192.168.X.X/` just says "Success". You can replace `index.html` with your own HTML/JS app and get a persistent browser-based controller accessible from any device on the network, no app install required. Changes survive reboots since `/userdata` is on persistent storage. Firmware updates may overwrite this folder, so you would need to re-deploy after updating.
+nginx is already running and serving files from `/userdata/www/`. The default page at `http://192.168.X.X/` just says "Success". You can replace `index.html` with your own HTML/JS app and get a persistent browser-based controller accessible from any device on the network, no app install required. Changes survive reboots since `/userdata` is on persistent storage. Firmware updates may overwrite this folder, so you would need to re-deploy after updating. (alternatively and more easily , you can put it on the root directory of the SD card and open it in a browser)
 
 **Stream the live view to OBS or VLC**
 The MJPEG stream on port 8092 works in VLC, OBS, ffplay, or any MJPEG player. It requires an active WebSocket session to activate — see the [Live streaming without the app](#live-streaming-without-the-app) section for the full connection sequence and a ready-to-run Python script.
@@ -52,10 +163,10 @@ These work in VLC, ffplay, OBS, or any MJPEG-capable player once the WebSocket s
 **Required WebSocket command sequence to activate the stream:**
 
 1. Connect to `ws://<device-ip>:9900/?client_id=<any-uuid>`
-2. Send `CMD_GLOBAL_TASK_MANAGER_ENTER_CAMERA` (16404) with protobuf payload `ReqEnterCamera { client_param: ClientParams { encode_type: 1 } }`
-3. Send `CMD_CAMERA_TELE_SET_RTSP_BITRATE_TYPE` (10042) with payload `{ bitrate_type: 1 }` for telephoto, or `CMD_CAMERA_WIDE_SET_RTSP_BITRATE_TYPE` (12032) for wide angle
-4. Send `CMD_CAMERA_TELE_GET_SYSTEM_WORKING_STATE` (10039) for telephoto, or `CMD_CAMERA_WIDE_GET_EXP_MODE` (12003) for wide angle
-5. Send `CMD_CAMERA_TELE_SET_PREVIEW_QUALITY` (10050) with payload `{ level: 1 }` for telephoto, or `CMD_CAMERA_WIDE_SET_PREVIEW_QUALITY` (12036) for wide angle
+2. Send `CMD_GLOBAL_TASK_MANAGER_ENTER_CAMERA` (16404, module 14) with protobuf payload `ReqEnterCamera { client_param: ClientParams { encode_type: 1 } }`
+3. Send `CMD_CAMERA_TELE_SET_RTSP_BITRATE_TYPE` (10042, module 1) with payload `{ bitrate_type: 1 }` for telephoto, or `CMD_CAMERA_WIDE_SET_RTSP_BITRATE_TYPE` (12032, module 2) for wide angle
+4. Send `CMD_CAMERA_TELE_GET_SYSTEM_WORKING_STATE` (10039, module 1) for telephoto, or `CMD_CAMERA_WIDE_GET_EXP_MODE` (12003, module 2) for wide angle
+5. Send `CMD_CAMERA_TELE_SET_PREVIEW_QUALITY` (10050, module 1) with payload `{ level: 1 }` for telephoto, or `CMD_CAMERA_WIDE_SET_PREVIEW_QUALITY` (12036, module 2) for wide angle
 6. Send a `"ping"` text message every 5 seconds to keep the session alive
 7. Open `http://<device-ip>:8092/mainstream` (telephoto) or `/secondstream` (wide angle)
 
@@ -80,7 +191,7 @@ For developers, the sections below document the hardware, running software, netw
 | GPU | 2D graphics engine + Rockchip RGA accelerator |
 | VPU | 4K H.264/H.265 encode and decode |
 | RAM | ~1.8GB |
-| Sensor | Sony IMX415 Starvis — 8MP telephoto, 2MP wide |
+| Sensor | Sony IMX415 Starvis — 8MP telephoto, Sunplus SPCA2281 - 2MP wide |
 | Lens module | YT10092 with IR0147-28IRC lens, F2.0 aperture |
 
 ---
@@ -89,7 +200,7 @@ For developers, the sections below document the hardware, running software, netw
 
 **OS:** Linux 4.19.111, kernel built 2023-02-02, `armv7l`
 
-**Build info:** The kernel version string reveals the firmware was compiled by a user named `hfx` on a machine called `hfx-RESCUER-R720-15IKBN`, which is a Lenovo Rescuer R720 gaming laptop. Strings in the main application binary reference `/home/liangxin/data_ex/dwarf2/DWARF2_V2/`, suggesting the app was built on a separate machine belonging to a developer named Liangxin. The legal entity behind DwarfLab is Tinyphoton Ltd.
+**Build info:** The kernel version string reveals the firmware was compiled by a user named `hfx` on a machine called `hfx-RESCUER-R720-15IKBN`, which is a Lenovo Rescuer R720 gaming laptop. Strings in the main application binary reference `/home/liangxin/data_ex/dwarf2/DWARF2_V2/`, suggesting the app was built on a separate machine belonging to a developer named Liangxin. 
 
 **Firmware version:** 2.2.18, app version 2.6 (from `/userdata/cfg/default_params_configs.yaml`)
 
@@ -115,7 +226,7 @@ The device has RGB LEDs controlled by `rgbPower.cpp` and `rgbPower_driver.cpp`. 
 
 ### Internal message bus
 
-The `dwarf2` process uses an internal message bus with numeric cmd IDs. The following cmd numbers have been observed from log analysis:
+The `dwarf2` process uses an internal message bus with numeric cmd IDs. These correspond directly to the WebSocket V2 API cmd numbers on port 9900 (see the "WebSocket V2 API (protobuf)" section below). The following cmd numbers have been observed from log analysis and confirmed via APK decompilation:
 
 | Cmd | Module | Name | Description |
 |-----|--------|------|-------------|
@@ -226,11 +337,11 @@ Deleting images in the DwarfLab app does not reliably remove them from the SD ca
 | 53 | TCP/UDP | DNS (dnsmasq) | Active in hotspot mode |
 | 67 | UDP | DHCP (dnsmasq) | Active in hotspot mode |
 | 80 | TCP | HTTP (nginx) | Web interface and SD card browser |
-| 1935 | TCP | RTMP | BSP leftover — not used by DwarfLab app, see below |
+| 1935 | TCP | RTMP | Rockchip BSP leftover — not used by the DwarfLab app, see below |
 | 5037 | TCP | ADB | Localhost only |
 | 5555 | TCP | ADB (adbd) | Android Debug Bridge daemon, ADB over TCP, no authentication required |
 | 8082 | TCP | HTTP REST API | JSON, POST endpoints, no authentication |
-| 8092 | TCP | HTTP media server | Camera streams and time sync — stream format unconfirmed |
+| 8092 | TCP | HTTP media server | MJPEG camera streams — confirmed working, see "Live streaming without the app" |
 | 9900 | TCP/UDP | Control API | WebSocket — confirmed in binary strings |
 
 ### ADB access
@@ -293,7 +404,15 @@ These may require GET rather than POST, or may be unimplemented in firmware 2.2.
 
 ### HTTP media server (port 8092)
 
-Port 8092 is an HTTP server serving camera streams and a time-sync endpoint, confirmed from the [dwarfii_api](https://github.com/DwarfTelescopeUsers/dwarfii_api) source. All endpoints are at `http://DWARF-IP:8092`.
+Port 8092 is an HTTP server serving MJPEG camera streams and a time-sync endpoint. All endpoints are at `http://DWARF-IP:8092`.
+
+The MJPEG stream endpoints are confirmed working:
+- `GET /mainstream` — telephoto camera (480x270, 30fps)
+- `GET /secondstream` — wide angle camera
+
+These are served on port 8092, not RTSP. The server sends a multipart MJPEG response with boundary `--dwarf`. The stream is activated by the WebSocket command sequence documented in the "Live streaming without the app" section. The device uses `libliveMedia` (LIVE555) internally but the stream is delivered over HTTP, not RTSP.
+
+Additional endpoints:
 
 | Endpoint | Description |
 |----------|-------------|
@@ -303,7 +422,6 @@ Port 8092 is an HTTP server serving camera streams and a time-sync endpoint, con
 | `GET /rawstream` | Raw preview stream |
 | `GET /date?date=<yyyy-mm-dd hh:mm:ss>` | Set device UTC time |
 
-The telephoto stream (`/mainstream`) is confirmed to serve `multipart/x-mixed-replace` with boundary `dwarf` — standard MJPEG over HTTP. The confirmed working wide angle URL is `/secondstream`. Both streams require an active WebSocket session on port 9900 — see [Live streaming without the app](#live-streaming-without-the-app) for the activation sequence.
 
 ### WebSocket control API
 
@@ -450,20 +568,8 @@ Named commands from the decompile, including those required for stream activatio
 | 16404 | `CMD_GLOBAL_TASK_MANAGER_ENTER_CAMERA` |
 | 16405 | `CMD_GLOBAL_TASK_GET_DEVICE_STATE_INFO` |
 
-`CMD_NOTIFY_STREAM_TYPE` (15234) carries a `StreamType` protobuf with field 1 `stream_type` (int) and field 2 `cam_id` (int, 0=telephoto, 1=wide angle). The device sends this to notify the app when the active stream format changes. See stream type values in the RTMP/stream types section below.
+`CMD_NOTIFY_STREAM_TYPE` (15234) carries a `StreamType` protobuf with field 1 `stream_type` (int) and field 2 `cam_id` (int, 0=telephoto, 1=wide angle). The device sends this to notify the app when the active stream format changes. See stream type values in the stream types section below.
 
-### HTTP API routes
-
-The following routes were identified from strings in `/usr/bin/dwarf2`:
-
-- `/api/main/status`
-- `/shootingMode/getSupportedShootingModes`
-- Album management routes
-- Firmware version route
-- Device info and reset routes
-- Log download route
-- File MD5 check route
-- Parameter config route
 
 ### SD card HTTP access
 
@@ -547,3 +653,12 @@ This is a community effort. PRs and issues are welcome. If you find something no
 - [grosseruser/dwarf2-html](https://github.com/grosseruser/dwarf2-html) — web frontend for the Dwarf II
 - [airockchip/rknn_model_zoo](https://github.com/airockchip/rknn_model_zoo) — pre-converted RKNN models ready to run on the NPU
 - [API V2 documentation](https://tinyphoton.feishu.cn/docx/GBkcdldTIo3SrdxFJDscYVYDnvf) — official DwarfLab WebSocket API docs
+
+## Changelog
+
+| Date | Firmware | Changes |
+|------|----------|---------|
+| 16 September 2026 | 2.2.18 | Initial session — SSH access, hardware identification, filesystem layout, open ports, WebSocket protocol noted, README created |
+| 22 September 2026 | 2.2.18 | Shell access confirmed, RV1126 SoC verified, embedded Linux environment documented |
+| 26 September 2026 | 2.2.18 | Port 8092 confirmed MJPEG, port 5555 confirmed ADB, NPU models characterised, motor axes confirmed, wide camera hardware ID, GPS EXIF confirmed, REST API on 8082 documented |
+| 26 September 2026 | 2.2.18 | APK decompilation — full WebSocket V2 protobuf protocol, complete command table, module ID mapping, MJPEG stream activation confirmed for both cameras, RTMP confirmed dead end, security analysis added |
