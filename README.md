@@ -84,7 +84,7 @@ For developers, the sections below document the hardware, running software, netw
 | `bsa_server` | Bluetooth stack |
 | `adbd` | Android Debug Bridge daemon — port 5037 localhost only |
 
-A `voiceAssistant.cpp` exists in the source tree, suggesting a voice assistant component is present in the firmware. Its interface is undocumented and it is not known whether the feature is active in shipping firmware.
+A `voiceAssistant.cpp` exists in the source tree. However, no physical microphone is present on the device — the only ALSA device is a software loopback. The wide angle camera module is a Sunplus SPCA2281 (USB ID 0c45:64ab) which supports audio capture in some configurations, but no audio capture device is registered in this firmware. The voice assistant is likely dead code or planned for a future hardware revision.
 
 The device has RGB LEDs controlled by `rgbPower.cpp` and `rgbPower_driver.cpp`. LEDs activate on WebSocket client connection. Battery level is reported as a percentage via UART from the power management hardware (observed: `ele = 45` = 45% battery).
 
@@ -277,7 +277,7 @@ Port 8092 is an HTTP server serving camera streams and a time-sync endpoint, con
 | `GET /rawstream` | Raw preview stream |
 | `GET /date?date=<yyyy-mm-dd hh:mm:ss>` | Set device UTC time |
 
-The stream format (MJPEG or RTSP-over-HTTP) has not yet been confirmed.
+The telephoto stream (`/mainstream`) is confirmed to serve `multipart/x-mixed-replace` with boundary `dwarf` — standard MJPEG over HTTP. The wide angle stream (`/thirdstream`) returns an empty response without an active app session.
 
 ### WebSocket control API
 
