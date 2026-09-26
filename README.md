@@ -6,7 +6,29 @@ This page was written with the assistance of anthropic's Claude sonnet 4.6 model
 
 Last updated: September 26th 2026
 
-> **Note:** The Dwarf II ships with default credentials and an open network interface that makes it easy to access and extend. However this is also a security vulnerability on public Wi-Fi networks. See the [Default Credentials](#default-credentials) section for details.
+> **Note:** The Dwarf II ships with default credentials and an open network interface that makes it easy to access and extend. However this is also a security vulnerability on public Wi-Fi networks. See the [Default Credentials](#default-credentials) section and the below dropdown for details.
+
+<details>
+<summary>⚠️ IMPORTANT — Security information — please read before use</summary>
+
+## How secure is the Dwarf II?
+
+Imagine anyone within about 50 metres of you has the same level of access to your telescope as you do. That is roughly the security situation with the default settings.
+
+The telescope creates its own WiFi network with a password that is identical on every Dwarf II ever sold. If someone nearby knows that password — and it is publicly available online — they can connect to your telescope without you knowing. Once connected they can see everything on your SD card, take control of the motors and camera, and in some configurations retrieve the password to your home WiFi network.
+
+If you plug it into your home network instead of using its own hotspot, anyone else already on that network has the same access. This includes family members, housemates, and any guests you have given your WiFi password to.
+
+The built-in remote access tools use the same login details on every unit worldwide. There is no notification or log entry that would tell you if someone else had connected.
+
+**What you should do:**
+
+- Open the DwarfLab app, go to Settings, and change the device password before you use it anywhere outside your home
+- Do not connect it to public WiFi, hotel WiFi, or any shared network
+- If you take it to a star party or any public event, assume the default password is known to other people there and change it first
+- If you do connect it to your home network, be aware that this is less secure than using its own hotspot
+
+</details>
 
 <details>
 <summary>Legal notices</summary>
