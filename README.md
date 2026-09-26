@@ -468,19 +468,6 @@ The API does not appear to respond to status queries without an active app sessi
 
 See [DwarfTelescopeUsers](https://github.com/DwarfTelescopeUsers) and [stevejcl/dwarf_test_apiV2](https://github.com/stevejcl/dwarf_test_apiV2) for community API documentation and Python bindings.
 
-### HTTP API routes
-
-The following routes were identified from strings in `/usr/bin/dwarf2`:
-
-- `/api/main/status`
-- `/shootingMode/getSupportedShootingModes`
-- Album management routes
-- Firmware version route
-- Device info and reset routes
-- Log download route
-- File MD5 check route
-- Parameter config route
-
 ### SD card HTTP access
 
 The SD card is browsable over HTTP without authentication:
