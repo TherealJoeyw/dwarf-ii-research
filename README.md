@@ -45,7 +45,7 @@ The firmware build strings embedded in the shipped firmware incidentally reveal 
 
 ### Trade secrets
 
-The information documented in this repository was obtained through lawful analysis of a device owned by the researcher and through decompilation permitted under Section 50B CDPA. No information was obtained through any breach of confidence, misappropriation, or any act that would constitute unlawful acquisition under the Trade Secrets (Enforcement, etc.) Regulations 2018. The researcher did not have access to any confidential information belonging to DwarfLab or Tinyphoton Ltd beyond what was discoverable through lawful analysis of the shipped product.
+The information documented in this repository was obtained through lawful analysis of a device owned by the researcher and through decompilation permitted under Section 50B CDPA. No information was obtained through any breach of confidence, misappropriation, or any act that would constitute unlawful acquisition under the Trade Secrets (Enforcement, etc.) Regulations 2018. The researcher did not have access to any confidential information belonging to DwarfLab or Tinyphoton Ltd beyond what was discoverable through lawful analysis of the shipped product, the software contained within it , its associated android application,  and infomation already public on the internet as of *26th September 2026*.
 
 ### Intellectual property exhaustion
 
