@@ -11,6 +11,8 @@ Last updated: September 26th 2026
 <details>
 <summary>Legal notices</summary>
 
+For the purposes of this section, "the researcher" and similar terms refer to Z.A. Whyman / J.A. Whyman (ORCID: [0009-0004-1895-0968](https://orcid.org/0009-0004-1895-0968)).
+
 ### Jurisdiction and applicable law
 
 This research was conducted in England and Wales and is governed by English law.
@@ -64,6 +66,23 @@ The security findings documented in this repository are published in the public 
 ### Acknowledgement request
 
 If DwarfLab or Tinyphoton Ltd address any of the security issues documented in this repository in a future firmware release, the researcher requests acknowledgement in the relevant release notes or security advisory as the original documenting researcher. Contact: Z.A. Whyman, ORCID [0009-0004-1895-0968](https://orcid.org/0009-0004-1895-0968). 
+
+### Unjust enrichment
+
+The researcher reserves the right to seek acknowledgement for any findings, methodologies, or documented interfaces from this repository that are incorporated into official DwarfLab or Tinyphoton Ltd products, documentation, or firmware releases. Incorporation of this research into a commercial product without acknowledgement may give rise to a claim in unjust enrichment under the English common law doctrine of unjust enrichment, as developed in *Lipkin Gorman v Karpnale Ltd* [1991] 2 AC 548 and *Benedetti v Sawiris* [2013] UKSC 50.
+*(In plain English: British law says that if DwarfLab or anyone associated with them benefits from this research, they are supposed to credit me.)*
+
+### Public interest and responsible disclosure
+
+This research serves a public interest function consistent with the principles of responsible disclosure recognised by the UK National Cyber Security Centre (NCSC) and the Information Commissioner's Office (ICO). The vulnerabilities documented here were not exploited against any third party. The researcher has not been contacted by DwarfLab or Tinyphoton Ltd regarding these findings prior to publication. Publication is in the public interest as it enables purchasers of the Dwarf II to make informed decisions about the security posture of a networked device operating on their home network.
+
+### Cyber Resilience Act
+
+The security issues documented in this repository — including default credentials common to all units, plaintext storage and logging of WiFi credentials, and unauthenticated network APIs — are directly relevant to manufacturers' obligations under the EU Cyber Resilience Act (Regulation (EU) 2024/2847), which imposes security requirements on manufacturers of products with digital elements placed on the EU market. The researcher believes publication of these findings serves the accountability purposes of the CRA and any equivalent UK legislation. Nothing in this repository constitutes legal advice regarding DwarfLab's or Tinyphoton Ltd's compliance obligations.
+
+### Right to repair
+
+This research is consistent with the principles underlying the EU Right to Repair Directive (Directive (EU) 2024/1799) and emerging UK right to repair policy, which support the right of owners to access, understand, and maintain the devices they have purchased. Documenting the software interfaces of a lawfully owned device for the purpose of building interoperable tools and maintaining independent access to its functions is precisely the kind of activity these frameworks are designed to protect.
 
 ### Disclaimer
 
