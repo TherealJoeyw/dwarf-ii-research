@@ -82,6 +82,9 @@ For developers, the sections below document the hardware, running software, netw
 | `vsftpd` | FTP server — anonymous access to SD card |
 | `avahi-daemon` | mDNS/Bonjour |
 | `bsa_server` | Bluetooth stack |
+| `adbd` | Android Debug Bridge daemon — port 5037 localhost only |
+
+A `voiceAssistant.cpp` exists in the source tree, suggesting a voice assistant component is present in the firmware. Its interface is undocumented and it is not known whether the feature is active in shipping firmware.
 
 ---
 
@@ -139,6 +142,14 @@ These files represent DwarfLab's proprietary sensor tuning and are not redistrib
 
 **`/userdata/shooting_schedule/`** — saved shooting schedules
 
+**`/root/`** — undocumented NPU models found at the root home directory
+- `model_sky_precompile.rknn` — sky segmentation model, not documented by DwarfLab
+
+**`/system/model/`** — additional undocumented NPU models
+- `ufoseg.rknn` — UFO/object segmentation model, purpose unknown
+- `model_autofocus.rknn` — undocumented autofocus model
+- `model_critic.rknn` — undocumented autofocus model (likely quality/sharpness critic)
+
 **`/rockchip_test/`** — Rockchip BSP test scripts for CPU, GPU, NPU, camera, audio, and WiFi. Not used in normal operation but left in the firmware. Includes `rknn_inference` and a VGG16 test model.
 
 ### SD card layout
@@ -165,9 +176,52 @@ Deleting images in the DwarfLab app does not reliably remove them from the SD ca
 | 1935 | TCP | RTMP | Live video — unconfirmed, see below |
 | 5037 | TCP | ADB | Localhost only |
 | 5555 | TCP | Control API | WebSocket, protocol unconfirmed |
-| 8082 | TCP | Unknown | HTTP, returns 404 on root |
+| 8082 | TCP | HTTP REST API | JSON, POST endpoints, no authentication |
 | 8092 | TCP | Unknown | Likely WebSocket |
 | 9900 | TCP/UDP | Control API | WebSocket — confirmed in binary strings |
+
+### HTTP REST API
+
+Port 8082 serves a JSON REST API from the main `dwarf2` process directly, not a separate service. All endpoints are at `http://DWARF-IP:8082`.
+
+Responses include a `code` field where `0` means success and `-1` indicates missing or invalid parameters.
+
+All confirmed working endpoints require `POST` with `Content-Type: application/json`. An empty JSON body (`{}`) is sufficient for most of them.
+
+> **Security note:** The `/deviceInfo` endpoint returns the connected WiFi password in plaintext to anyone who can reach port 8082. There is no authentication on this port.
+
+#### Confirmed working endpoints
+
+| Endpoint | Returns |
+|----------|---------|
+| `POST /deviceInfo` | Device name, MAC address, BLE service ID, AP and STA IP addresses, SD card info, WiFi SSID and password in plaintext, current WiFi mode |
+| `POST /firmwareVersion` | Major, minor, patch version numbers |
+| `POST /getResetState` | Factory default device name and password, and whether the device has been factory reset |
+| `POST /shootingMode/getSupportedShootingModes` | Full list of shooting modes with IDs and associated shooting technology IDs |
+| `POST /album/list/mediaCounts` | Count of media by type (type IDs: 0–5, exact type names unknown) |
+| `POST /album/astro/fitsList` | Empty response — likely requires session parameters |
+
+Shooting mode IDs returned by `/shootingMode/getSupportedShootingModes`:
+
+| ID | Mode |
+|----|------|
+| 1 | Normal |
+| 2 | DSO |
+| 3 | Sun/Moon |
+| 6 | Auto Tracking |
+| 7 | Panorama |
+| 8 | Sun |
+| 9 | Moon |
+| 10 | Planet |
+
+#### Endpoints returning 501 Not Implemented
+
+These may require GET rather than POST, or may be unimplemented in firmware 2.2.18. `/getDefaultParamsConfig` is confirmed as GET and returns a name/version response with empty `cameras` and `featureParams` arrays.
+
+- `GET /getDefaultParamsConfig`
+- `/logInfo`
+- `/downloadLog`
+- `/checkMd5`
 
 ### WebSocket control API
 
@@ -177,7 +231,25 @@ The main control API runs on port 9900 over WebSocket with JSON messages:
 ws://192.168.X.X:9900
 ```
 
-Messages use a JSON `WsPacket` wrapper with `cmd` and `data` fields. A keep-alive is required: send both a WebSocket ping frame and a `"ping"` text message; the device responds with `"pong"`.
+Messages use an `interface` field (not `cmd`) to identify the command, followed by any parameters for that command:
+
+```json
+{"interface": 11203, "ra": 83.82, "dec": -5.39}
+```
+
+A keep-alive is required: send both a WebSocket ping frame and a `"ping"` text message; the device responds with `"pong"`.
+
+Known interface numbers:
+
+| Interface | Command |
+|-----------|---------|
+| 11004 | `shutDown` |
+| 11011 | `chargingStatus` |
+| 11203 | `startGoto` |
+| 11405 | `microsdStatus` |
+| 11410 | `softwareVersion` |
+
+The API does not appear to respond to status queries without an active app session — further investigation needed.
 
 See [DwarfTelescopeUsers](https://github.com/DwarfTelescopeUsers) and [stevejcl/dwarf_test_apiV2](https://github.com/stevejcl/dwarf_test_apiV2) for community API documentation and Python bindings.
 
