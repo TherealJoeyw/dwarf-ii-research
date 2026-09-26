@@ -112,8 +112,10 @@ This research is consistent with the principles underlying the EU Right to Repai
 
 This repository is provided for educational and interoperability purposes only. The researcher accepts no liability for any damage, data loss, or other consequences arising from use of the information contained herein. Use of this information to access devices you do not own or have permission to access may constitute an offence under the Computer Misuse Act 1990.
 
+# (In plain English: I bought it, I own it, and UK law specifically says the manufacturer cannot use copyright or technical protection measures to stop me from making this repo.)
+
 </details>
-(In plain English: I bought it, I own it, and UK law specifically says the manufacturer cannot use copyright or technical protection measures to stop me from doing this.)
+
 
 
 ## What can I do with this?
