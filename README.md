@@ -25,6 +25,12 @@ All research was conducted on a device lawfully acquired and owned by the resear
 
 Section 50A CDPA permits the making of back-up copies of lawfully obtained software. Section 296ZE CDPA preserves permitted acts in relation to technical measures and prevents copyright owners from using technological protection measures to prevent lawful acts including those permitted under Section 50B. This research falls within these permitted acts.
 
+### Use of AI assistance
+
+This research was conducted with the assistance of Claude (Sonnet 4.6), a large language model developed by Anthropic. Claude assisted with interpretation of decompiled code, protocol analysis, Python scripting, and drafting of this documentation. All findings were verified by the researcher through direct empirical testing on the device. The researcher takes full responsibility for the accuracy of the content.
+
+The use of AI assistance in research and documentation does not, in the researcher's view, affect the legal status of this work. The interoperability permissions under Section 50B CDPA attach to the person lawfully entitled to use the program, not to the tools used in the analysis. The researcher is that person and directed the analysis throughout. Output generated with AI assistance is not currently afforded copyright protection in the UK under the Intellectual Property Office's current guidance, meaning the documentation in this repository is either owned by the researcher as author of the overall work or exists without copyright protection — in either case it is freely available for use. Anthropic's terms of service permit use of Claude for research and documentation tasks of this nature.
+
 ### No proprietary assets redistributed
 
 No proprietary source code, compiled binaries, firmware images, or other copyrighted assets belonging to DwarfLab, Tinyphoton Ltd, Rockchip, or any other party are reproduced or redistributed in this repository. Command numbers, field names, and protobuf schema information derived from decompilation are reproduced only to the extent necessary to document communication interfaces for interoperability purposes.
