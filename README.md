@@ -86,6 +86,32 @@ For developers, the sections below document the hardware, running software, netw
 
 A `voiceAssistant.cpp` exists in the source tree, suggesting a voice assistant component is present in the firmware. Its interface is undocumented and it is not known whether the feature is active in shipping firmware.
 
+The device has RGB LEDs controlled by `rgbPower.cpp` and `rgbPower_driver.cpp`. LEDs activate on WebSocket client connection. Battery level is reported as a percentage via UART from the power management hardware (observed: `ele = 45` = 45% battery).
+
+### Internal message bus
+
+The `dwarf2` process uses an internal message bus with numeric cmd IDs. The following cmd numbers have been observed from log analysis:
+
+| Cmd | Module | Description |
+|-----|--------|-------------|
+| 10050 | cameraManager | Set telephoto preview quality |
+| 11040 | astro | Astro subsystem message |
+| 12022 | cameraManager | Take photo (wide angle = type 1) |
+| 12036 | cameraManager | Set wide angle preview quality |
+| 13010 | system | System heartbeat/status poll — fires continuously |
+| 16405 | taskCenter | Task center message (module_id 14) |
+
+These are internal bus cmd IDs, distinct from the WebSocket interface numbers on port 9900.
+
+### Motor system
+
+The two stepper motors communicate with the main SoC via UART. Motor parameters logged on each movement include speed (degrees/second), frequency (steps/second), pulse count, direction, resolution (microsteps), and ramp. Confirmed motor assignments, verified empirically by observing log output during manual movement:
+
+- Motor 1 — azimuth (spin/left-right rotation)
+- Motor 2 — altitude (pitch/up-down tilt)
+
+The `serviceJoystick` function handles joystick input but will reject commands with "INVALID CMD: motor busy!" if a move is already in progress.
+
 ---
 
 ## Filesystem
@@ -215,6 +241,8 @@ All confirmed working endpoints require `POST` with `Content-Type: application/j
 | `POST /shootingMode/getSupportedShootingModes` | Full list of shooting modes with IDs and associated shooting technology IDs |
 | `POST /album/list/mediaCounts` | Count of media by type (type IDs: 0–5, exact type names unknown) |
 | `POST /album/astro/fitsList` | Empty response — likely requires session parameters |
+| `POST /shootingMode/getParamAndSetting` | Current shooting mode parameters and settings |
+| `POST /album/list/mediaInfos` | Media file info list |
 
 Shooting mode IDs returned by `/shootingMode/getSupportedShootingModes`:
 
@@ -265,7 +293,7 @@ Messages use an `interface` field (not `cmd`) to identify the command, followed 
 {"interface": 11203, "ra": 83.82, "dec": -5.39}
 ```
 
-A keep-alive is required: send both a WebSocket ping frame and a `"ping"` text message; the device responds with `"pong"`.
+The device requires an active WebSocket client session before it will respond to commands. The first client to connect is designated the `master client` and assigned a UUID client_id. Third-party clients must complete the WebSocket handshake and send an immediate `"ping"` text message to establish the session. The keep-alive ping must be sent every 5 seconds or the connection is dropped; the device responds with `"pong"`. Send both a WebSocket ping frame and the `"ping"` text message.
 
 #### V1 API command reference
 
@@ -400,6 +428,8 @@ The Dwarf II ships with the same default credentials on every unit, which is wha
 The hotspot password can be changed in the app under Settings > Device Password, which also updates the Bluetooth password. The SSH root password can be changed with `passwd` over SSH. Neither is required for normal use on a home network.
 
 One thing worth knowing: the connected WiFi password is logged in plaintext to `/userdata/log/dwarf2.log` and stored in `/userdata/cfg/ble_wifi.conf`. Both are accessible over FTP. This is only relevant if you connect the telescope to your home network in STA mode and someone else can reach it on that network.
+
+> **Privacy note:** Every photo taken by the Dwarf II has GPS coordinates written into the EXIF data automatically, accurate to approximately street level. This applies to all photo types including normal photos, astro captures, and thumbnails. The coordinates are stored in the SQLite database at `/sdcard/DWARF_II/data/device.db` and are also accessible via FTP and HTTP without authentication.
 
 ---
 
