@@ -11,7 +11,7 @@ Last updated: September 26th 2026
 <details>
 <summary>Legal notices</summary>
 
-For the purposes of this section, "the researcher" and similar terms refer to Z.A. Whyman / J.A. Whyman (ORCID: [0009-0004-1895-0968](https://orcid.org/0009-0004-1895-0968)).
+For the purposes of this section, "the researcher" , "the author" and similar terms refer to Z.A. Whyman / J.A. Whyman (ORCID: [0009-0004-1895-0968](https://orcid.org/0009-0004-1895-0968)).
 
 ### Jurisdiction and applicable law
 
@@ -19,7 +19,7 @@ This research was conducted in England and Wales and is governed by English law.
 
 ### Interoperability research
 
-This repository contains original interoperability research conducted under Section 50B of the Copyright, Designs and Patents Act 1988 (CDPA), which permits decompilation of a computer program for the purpose of obtaining information necessary to create an independent program capable of interoperability with it. Any contract terms that try to ban or restrict permitted decompilation are void under Section 296A of the Act. The decompilation was limited to obtaining interface information and did not exceed what was necessary for that purpose. The information obtained has not been used for any purpose other than the creation of interoperable software and for the authors personal enjoyment, and has not been supplied to any third party except as permitted under Section 50B(3). This research is also consistent with Article 6 of EU Directive 2009/24/EC on the legal protection of computer programs and its UK retained equivalent.
+This repository contains original interoperability research conducted under Section 50B of the Copyright, Designs and Patents Act 1988 (CDPA), which permits decompilation of a computer program for the purpose of obtaining information necessary to create an independent program capable of interoperability with it. Any contract terms that try to ban or restrict permitted decompilation are void under Section 296A of the Act. The decompilation was limited to obtaining interface information and did not exceed what was necessary for that purpose. The information obtained has not been used for any purpose other than the creation and facilitation of the creation of interoperable software, and has not been supplied to any third party except as permitted under Section 50B(3). This research is also consistent with Article 6 of EU Directive 2009/24/EC on the legal protection of computer programs and its UK retained equivalent.
 
 ### Ownership and authorisation
 
@@ -37,11 +37,11 @@ The use of AI assistance in research and documentation does not, in the research
 
 ### No proprietary assets redistributed
 
-No proprietary source code, compiled binaries, firmware images, or other copyrighted assets belonging to DwarfLab, Tinyphoton Ltd, Rockchip, or any other party are reproduced or redistributed in this repository. Command numbers, field names, and protobuf schema information derived from decompilation are reproduced only to the extent necessary to document communication interfaces for interoperability purposes.
+No proprietary source code, compiled binaries, firmware images, or other copyrighted assets belonging to DwarfLab, Tinyphoton Ltd, Rockchip, or any other party other than the author are reproduced or redistributed in this repository. Command numbers, field names, and protobuf schema information derived from decompilation are reproduced only to the extent necessary to document communication interfaces for interoperability purposes.
 
 ### Database rights
 
-Star catalogue index files present on the device (index-4110.fits, index-4111.fits) may be protected as databases under the Copyright and Rights in Databases Regulations 1997. These files are not reproduced or redistributed in this repository. Their existence, location, and purpose are documented for interoperability purposes only.
+Star catalogue index files present on the Dwarf 2 device and mobile application (index-4110.fits, index-4111.fits) may be protected as databases under the Copyright and Rights in Databases Regulations 1997. These files are not reproduced or redistributed in this repository. Their existence, location, and purpose are documented for interoperability purposes only.
 
 ### Moral rights
 
@@ -49,7 +49,7 @@ The firmware build strings embedded in the shipped firmware incidentally reveal 
 
 ### Trade secrets
 
-The information documented in this repository was obtained through lawful analysis of a device owned by the researcher and through decompilation permitted under Section 50B CDPA. No information was obtained through any breach of confidence, misappropriation, or any act that would constitute unlawful acquisition under the Trade Secrets (Enforcement, etc.) Regulations 2018. The researcher did not have access to any confidential information belonging to DwarfLab or Tinyphoton Ltd beyond what was discoverable through lawful analysis of the shipped product, the software contained within it , its associated android application,  and infomation already public on the internet as of *26th September 2026*.
+The information documented in this repository was obtained through lawful and non-destructive, computational and physical interface with a device owned by the researcher and through decompilation permitted under Section 50B CDPA. No information was obtained through any breach of confidence, misappropriation, or any act that would constitute unlawful acquisition under the Trade Secrets (Enforcement, etc.) Regulations 2018. The researcher did not have access to any information belonging to DwarfLab, Tinyphoton Ltd or any associated entity beyond what was discoverable through lawful analysis of the shipped product, the software contained within it, its associated Android mobile phone application, and information already lawfully public on the internet as of *26th September 2026*.
 
 ### Intellectual property exhaustion
 
@@ -58,6 +58,8 @@ Under the doctrine of exhaustion of intellectual property rights, DwarfLab's and
 ### Security disclosures
 
 This documentation does not constitute a formal security advisory. Vulnerabilities and security-relevant behaviours noted in this repository (including but not limited to: SSH root access with default credentials common to all units, plaintext storage and logging of WiFi credentials, unauthenticated REST API access, and FTP anonymous read access to the SD card) are described accurately as behaviours present in the device's default shipped configuration. These behaviours were not introduced by this research. The researcher did not exploit these vulnerabilities against any third party.
+
+# The author recommends that DwarfLab review the security posture of the device's default network configuration. The specific remediation approach is left to DwarfLab's discretion, however the author suggests that a developer mode or per-interface toggle behind an appropriate warning screen in the phone app would strike a reasonable balance — improving security for general consumers without removing the legitimate ability of technically capable owners to access their own devices. The Dwarf II is an excellent hardware platform and the author believes a thriving third-party software ecosystem would be of significant benefit to both the community and to DwarfLab . The author respectfully requests that any security measures taken do not prevent the creation of third-party interface and control software, and remain consistent with owners' rights under Section 50B CDPA and the right to repair principles outlined above.
 
 ### Public interest
 
