@@ -14,6 +14,7 @@ Last updated: September 26th 2026
 ## How secure is the Dwarf II?
 
 ### Assume anyone within about 50 metres of you has the same level of access to your telescope as you do. That is roughly the security situation with the default settings.
+### It is also worth knowing that the level of access available to anyone on the same network could, in theory, be used to permanently damage the device beyond repair — not something the researcher has done or recommends, but a real consequence of leaving the default settings unchanged.
 
 The telescope creates its own WiFi network with a password that is identical on every Dwarf II ever sold. If someone nearby knows that password , and it was publicly available online even before I made this repository, they can connect to your telescope without you knowing. Once connected they can see everything on the SD card, take control of the motors and camera, and in some configurations retrieve the password to every WiFi network it has been connected to since it was last factory reset.
 
