@@ -22,7 +22,7 @@ The Dwarf II has pan/tilt motors and a decent sensor. You can point it at a bird
 nginx is already running and serving files from `/userdata/www/`. The default page at `http://192.168.X.X/` just says "Success". You can replace `index.html` with your own HTML/JS app and get a persistent browser-based controller accessible from any device on the network, no app install required. Changes survive reboots since `/userdata` is on persistent storage. Firmware updates may overwrite this folder, so you would need to re-deploy after updating.
 
 **Stream the live view to OBS or VLC**
-An RTMP server is running on port 1935. Try `rtmp://192.168.X.X/live` in VLC (Media > Open Network Stream) or as a media source in OBS. This has not been fully confirmed to work outside the official app — see the Network section for details.
+The MJPEG stream on port 8092 (`/mainstream` for telephoto) can be opened in VLC via Media > Open Network Stream or used as a media source in OBS. The RTMP server on port 1935 is a BSP leftover and is not used by the DwarfLab app — see the Network section for details.
 
 **Access the SD card over FTP**
 Connect to `ftp://192.168.X.X` with anonymous login, no password needed. This gives you full read access to the SD card, including all your captured images and session data.
@@ -92,16 +92,16 @@ The device has RGB LEDs controlled by `rgbPower.cpp` and `rgbPower_driver.cpp`. 
 
 The `dwarf2` process uses an internal message bus with numeric cmd IDs. The following cmd numbers have been observed from log analysis:
 
-| Cmd | Module | Description |
-|-----|--------|-------------|
-| 10050 | cameraManager | Set telephoto preview quality |
-| 11040 | astro | Astro subsystem message |
-| 12022 | cameraManager | Take photo (wide angle = type 1) |
-| 12036 | cameraManager | Set wide angle preview quality |
-| 13010 | system | System heartbeat/status poll — fires continuously |
-| 16405 | taskCenter | Task center message (module_id 14) |
+| Cmd | Module | Name | Description |
+|-----|--------|------|-------------|
+| 10050 | MODULE_CAMERA_TELE | `CMD_CAMERA_TELE_SET_PREVIEW_QUALITY` | Set telephoto preview quality |
+| 11040 | MODULE_ASTRO | `CMD_ASTRO_GET_QUICK_SET_LIST` | Astro subsystem message |
+| 12022 | MODULE_CAMERA_WIDE | `CMD_CAMERA_WIDE_PHOTOGRAPH` | Take photo (wide angle = type 1) |
+| 12036 | MODULE_CAMERA_WIDE | `CMD_CAMERA_WIDE_SET_PREVIEW_QUALITY` | Set wide angle preview quality |
+| 13010 | MODULE_SYSTEM | `CMD_SYSTEM_SET_LOCATION` | Set device location (fires continuously with GPS data) |
+| 16405 | MODULE_TASK_CENTER | `CMD_GLOBAL_TASK_GET_DEVICE_STATE_INFO` | Get device state info from task center |
 
-These are internal bus cmd IDs, distinct from the WebSocket interface numbers on port 9900.
+Command names resolved from APK decompilation of `com.convergence.dwarflab` (September 2026). These are internal bus cmd IDs, distinct from the WebSocket interface numbers on port 9900. MODULE_TASK_CENTER covers cmd range 16400-16599; the module name is not the same as the `module_id` field in `WsPacket` — see the WsPacket section below.
 
 ### Motor system
 
@@ -201,7 +201,7 @@ Deleting images in the DwarfLab app does not reliably remove them from the SD ca
 | 53 | TCP/UDP | DNS (dnsmasq) | Active in hotspot mode |
 | 67 | UDP | DHCP (dnsmasq) | Active in hotspot mode |
 | 80 | TCP | HTTP (nginx) | Web interface and SD card browser |
-| 1935 | TCP | RTMP | Live video — unconfirmed, see below |
+| 1935 | TCP | RTMP | BSP leftover — not used by DwarfLab app, see below |
 | 5037 | TCP | ADB | Localhost only |
 | 5555 | TCP | ADB (adbd) | Android Debug Bridge daemon, ADB over TCP, no authentication required |
 | 8082 | TCP | HTTP REST API | JSON, POST endpoints, no authentication |
@@ -210,7 +210,7 @@ Deleting images in the DwarfLab app does not reliably remove them from the SD ca
 
 ### ADB access
 
-Port 5555 runs `adbd`, the Android Debug Bridge daemon, confirmed by cross-referencing `/proc/<pid>/cmdline` against the socket inode in `/proc/net/tcp`. No authentication is required.
+Port 5555 runs `adbd`, the Android Debug Bridge daemon, confirmed by cross-referencing `/proc/<pid>/cmdline` against the socket inode in `/proc/net/tcp`. No authentication is required. ADB connection is confirmed working via direct testing.
 
 Connect using [Android Platform Tools](https://developer.android.com/tools/releases/platform-tools):
 
@@ -219,7 +219,7 @@ adb connect <ip>:5555
 adb shell
 ```
 
-This gives a root shell without needing SSH credentials, and is an alternative access path if the SSH password has been changed. `adb pull` can also be used for bulk file transfer from the SD card, which is faster than FTP for large amounts of data.
+This gives a root shell identical to SSH — no additional packages or capabilities beyond what SSH provides. It is a useful backup access method if the SSH password has been changed. `adb pull` can also be used for bulk file transfer from the SD card, which is faster than FTP for large amounts of data. `adb logcat` gives a live stream of Android/system log output from the device.
 
 ### HTTP REST API
 
@@ -281,23 +281,44 @@ The telephoto stream (`/mainstream`) is confirmed to serve `multipart/x-mixed-re
 
 ### WebSocket control API
 
-The main control API runs on port 9900 over WebSocket with JSON messages:
+> **Source note:** Connection details and command names in this section were obtained by APK decompilation of `com.convergence.dwarflab` (version available on APKPure, September 2026), supplemented by the existing [dwarfii_api](https://github.com/DwarfTelescopeUsers/dwarfii_api) community documentation.
+
+The main control API runs on port 9900 over WebSocket. The full URL format includes a `client_id` query parameter:
 
 ```
-ws://192.168.X.X:9900
+ws://<device-ip>:9900/?client_id=<uuid>
 ```
 
-Messages use an `interface` field (not `cmd`) to identify the command, followed by any parameters for that command:
+The `client_id` is a random UUID generated once by the app and persisted in MMKV storage under key `data_default_client_id` in the `device` store. For third-party clients, generate any valid UUID (v4 recommended) and reuse it across connections to the same device.
 
-```json
-{"interface": 11203, "ra": 83.82, "dec": -5.39}
-```
+**Claiming the master client slot:** After connecting, send `CMD_SYSTEM_SET_MASTER` (cmd 13004) to claim the master client role. The first client to send this becomes the master client and is assigned control authority.
 
-The device requires an active WebSocket client session before it will respond to commands. The first client to connect is designated the `master client` and assigned a UUID client_id. Third-party clients must complete the WebSocket handshake and send an immediate `"ping"` text message to establish the session. The keep-alive ping must be sent every 5 seconds or the connection is dropped; the device responds with `"pong"`. Send both a WebSocket ping frame and the `"ping"` text message.
+**Keep-alive:** Send a keep-alive ping every 40 seconds. The device responds with `"pong"`. Previous notes stating 5 seconds were incorrect. Send both a WebSocket ping frame and the `"ping"` text message.
+
+**Close codes:**
+- `4409` — Normal disconnect. The device sends a generation counter used to reject stale reconnects. Reconnect normally.
+- `4410` — Device is rejecting a STA-mode IP connection. No reconnect should be attempted.
+
+#### WsPacket protobuf structure
+
+The V2 API (current firmware) uses a protobuf-encoded `WsPacket` for all messages. Full field list from `BaseProto.WsPacket`:
+
+| Field | Name | Type |
+|-------|------|------|
+| 1 | `major_version` | int |
+| 2 | `minor_version` | int |
+| 3 | `device_id` | int |
+| 4 | `module_id` | int |
+| 5 | `cmd` | int |
+| 6 | `type` | int |
+| 7 | `data` | bytes |
+| 8 | `client_id` | string |
+
+The `module_id` field is derived from the `cmd` value using the module ranges listed in the WsCmd section below. The `data` field carries the command-specific protobuf payload.
 
 #### V1 API command reference
 
-The following interface numbers are confirmed from the [dwarfii_api](https://github.com/DwarfTelescopeUsers/dwarfii_api) npm package (DwarfTelescopeUsers, 2023). These are V1 API numbers for firmware 2.x. The V2 API used by newer firmware uses a different protobuf-based `WsPacket` format and may differ. REST endpoints on port 8082 such as `/deviceInfo` and `/firmwareVersion` are separate and not listed here.
+The following interface numbers are confirmed from the [dwarfii_api](https://github.com/DwarfTelescopeUsers/dwarfii_api) npm package (DwarfTelescopeUsers, 2023). These are V1 API numbers for firmware 2.x. The V2 API used by newer firmware uses the protobuf-based `WsPacket` format described above and may differ. REST endpoints on port 8082 such as `/deviceInfo` and `/firmwareVersion` are separate and not listed here.
 
 Most commands require a `camId` parameter: `0` for telephoto, `1` for wide angle.
 
@@ -359,6 +380,41 @@ The API does not appear to respond to status queries without an active app sessi
 
 See [DwarfTelescopeUsers](https://github.com/DwarfTelescopeUsers) and [stevejcl/dwarf_test_apiV2](https://github.com/stevejcl/dwarf_test_apiV2) for community API documentation and Python bindings.
 
+### WsCmd command modules
+
+The `WsCmd` enum from the decompiled APK defines all commands and their module assignments by numeric range. The `module_id` field in `WsPacket` corresponds to these ranges.
+
+| Cmd range | Module name |
+|-----------|-------------|
+| 10000–10499 | `MODULE_CAMERA_TELE` |
+| 11000–11499 | `MODULE_ASTRO` |
+| 12000–12499 | `MODULE_CAMERA_WIDE` |
+| 13000–13299 | `MODULE_SYSTEM` |
+| 13500–13799 | `MODULE_RGB_POWER` |
+| 14000–14499 | `MODULE_MOTOR` |
+| 14800–14899 | `MODULE_TRACK` |
+| 15000–15199 | `MODULE_FOCUS` |
+| 15200–15499 | `MODULE_NOTIFY` |
+| 15500–15599 | `MODULE_PANORAMA` |
+| 15700–15799 | `MODULE_ITIPS` |
+| 16100–16399 | `MODULE_SHOOTING_SCHEDULE` |
+| 16400–16599 | `MODULE_TASK_CENTER` |
+| 16700–16799 | `MODULE_PARAM` |
+| 16800–16899 | `MODULE_VOICE_ASSISTANT` |
+| 16900–16999 | `MODULE_CAMERA_GUIDE` |
+| 17000–17099 | `MODULE_DEVICE` |
+
+Selected named commands from the decompile:
+
+| Cmd | Name |
+|-----|------|
+| 13004 | `CMD_SYSTEM_SET_MASTER` |
+| 13010 | `CMD_SYSTEM_SET_LOCATION` |
+| 15234 | `CMD_NOTIFY_STREAM_TYPE` |
+| 16405 | `CMD_GLOBAL_TASK_GET_DEVICE_STATE_INFO` |
+
+`CMD_NOTIFY_STREAM_TYPE` (15234) carries a `StreamType` protobuf with field 1 `stream_type` (int) and field 2 `cam_id` (int, 0=telephoto, 1=wide angle). The device sends this to notify the app when the active stream format changes. See stream type values in the RTMP/stream types section below.
+
 ### HTTP API routes
 
 The following routes were identified from strings in `/usr/bin/dwarf2`:
@@ -389,15 +445,21 @@ This includes all captured images and a SQLite database at `/sdcard/DWARF_II/dat
 
 Note: `device.db` displays a timestamp of 01-Jan-2038 due to a Unix timestamp overflow bug in the firmware.
 
-### RTMP stream (unconfirmed)
+### RTMP (dead end)
 
-An RTMP server is running on port 1935. The application name is `live`:
+RTMP on port 1935 is a dead end. APK decompilation of `com.convergence.dwarflab` confirms the app has no RTMP stream type — only RTSP (1) and JPEG (2), defined in `StreamTypeAnn`. The RTMP server process visible on port 1935 is almost certainly a Rockchip BSP leftover that the DwarfLab application never activates. No further investigation is warranted.
 
-```
-rtmp://192.168.X.X/live
-```
+### Stream types
 
-Attempts to connect via VLC and other tools have been unsuccessful outside of the official app. The stream may only be active when the DwarfLab app is connected. If it does work, it can be pulled into OBS for live streaming or used as a wildlife/birdwatching webcam without the app. Further investigation needed.
+The app's `StreamTypeAnn` enum defines the stream types the device can operate in:
+
+| Value | Name | Description |
+|-------|------|-------------|
+| 0 | `NONE` | No active stream |
+| 1 | `RTSP` | RTSP stream |
+| 2 | `JPEG` | MJPEG over HTTP |
+
+The device notifies the app of stream type changes via `CMD_NOTIFY_STREAM_TYPE` (15234), carrying a `StreamType` protobuf with `stream_type` (int, field 1) and `cam_id` (int, field 2; 0=telephoto, 1=wide angle). The confirmed MJPEG stream on port 8092 corresponds to stream type 2 (`JPEG`).
 
 ### NPU inference
 
