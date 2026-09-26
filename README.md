@@ -9,17 +9,17 @@ Last updated: September 26th 2026
 > **Note:** The Dwarf II ships with default credentials and an open network interface that makes it easy to access and extend. However this is also a security vulnerability on public Wi-Fi networks. See the [Default Credentials](#default-credentials) section and the below dropdown for details.
 
 <details>
-<summary>⚠️ IMPORTANT — Security information — please read before use</summary>
+<summary>⚠️ IMPORTANT — Plain English Security Information — please read before use</summary>
 
 ## How secure is the Dwarf II?
 
-Imagine anyone within about 50 metres of you has the same level of access to your telescope as you do. That is roughly the security situation with the default settings.
+### Assume anyone within about 50 metres of you has the same level of access to your telescope as you do. That is roughly the security situation with the default settings.
 
-The telescope creates its own WiFi network with a password that is identical on every Dwarf II ever sold. If someone nearby knows that password — and it is publicly available online even before i made this repository, they can connect to your telescope without you knowing. Once connected they can see everything on your SD card, take control of the motors and camera, and in some configurations retrieve the password to every WiFi network it has been connected to since it was factory reset last.
+The telescope creates its own WiFi network with a password that is identical on every Dwarf II ever sold. If someone nearby knows that password , and it was publicly available online even before I made this repository, they can connect to your telescope without you knowing. Once connected they can see everything on the SD card, take control of the motors and camera, and in some configurations retrieve the password to every WiFi network it has been connected to since it was last factory reset.
 
 If you plug it into your home network instead of using its own hotspot, anyone else already on that network has the same access. This includes family members, housemates, and any guests you have given your WiFi password to.
 
-The built-in remote access tools use the same login details on every unit worldwide. There is no notification or log entry that would tell you if someone else had connected.
+The built-in remote access tools use the same login details on every unit worldwide. There is no notification or log entry that would tell you if someone else had connected, however this repository contains information that could assist in the creation of such a notification tool.
 
 **What you should do:**
 
