@@ -86,7 +86,7 @@ This documentation does not constitute a formal security advisory. Vulnerabiliti
 
 ### Public interest
 
-The security findings documented in this repository are published in the public interest. Purchasers of the Dwarf II have a legitimate interest in understanding the security posture of a networked device operating on their home network. Publication of accurate factual information about a matter of public interest is a defence to any claim in defamation under Section 4 of the Defamation Act 2013. The researcher believes all statements of fact in this repository to be true and has taken reasonable care to verify them.
+The security findings documented in this repository are published in the public interest. Purchasers of the Dwarf II have a legitimate interest in understanding the security posture of a networked device operating on their home network and connecting to their personal devices. Publication of accurate factual information about a matter of public interest is a defence to any claim in defamation under Section 4 of the Defamation Act 2013. The researcher believes all statements of fact in this repository to be true and has taken reasonable care to verify them.
 
 ### Acknowledgement request
 
