@@ -200,7 +200,7 @@ For developers, the sections below document the hardware, running software, netw
 
 **OS:** Linux 4.19.111, kernel built 2023-02-02, `armv7l`
 
-**Build info:** The kernel version string reveals the firmware was compiled by a user named `hfx` on a machine called `hfx-RESCUER-R720-15IKBN`, which is a Lenovo Rescuer R720 gaming laptop. Strings in the main application binary reference `/home/liangxin/data_ex/dwarf2/DWARF2_V2/`, suggesting the app was built on a separate machine belonging to a developer named Liangxin. The legal entity behind DwarfLab is Tinyphoton Ltd.
+**Build info:** The kernel version string reveals the firmware was compiled by a user named `hfx` on a machine called `hfx-RESCUER-R720-15IKBN`, which is a Lenovo Rescuer R720 gaming laptop. Strings in the main application binary reference `/home/liangxin/data_ex/dwarf2/DWARF2_V2/`, suggesting the app was built on a separate machine belonging to a developer named Liangxin. 
 
 **Firmware version:** 2.2.18, app version 2.6 (from `/userdata/cfg/default_params_configs.yaml`)
 
