@@ -6,6 +6,63 @@ This page was written with the assistance of anthropic's Claude sonnet 4.6 model
 
 > **Note:** The Dwarf II ships with default credentials and an open network interface that makes it easy to access and extend. However this is also a security vulnerability on public Wi-Fi networks. See the [Default Credentials](#default-credentials) section for details.
 
+<details>
+<summary>Legal notices</summary>
+
+### Jurisdiction and applicable law
+
+This research was conducted in England and Wales and is governed by English law.
+
+### Interoperability research
+
+This repository contains original interoperability research conducted under Section 50B of the Copyright, Designs and Patents Act 1988 (CDPA), which permits decompilation of a computer program for the purpose of obtaining information necessary to create an independent program capable of interoperability with it. The decompilation was limited to obtaining interface information and did not exceed what was necessary for that purpose. The information obtained has not been used for any purpose other than the creation of interoperable software, and has not been supplied to any third party except as permitted under Section 50B(3). This research is also consistent with Article 6 of EU Directive 2009/24/EC on the legal protection of computer programs and its UK retained equivalent.
+
+### Ownership and authorisation
+
+All research was conducted on a device lawfully acquired and owned by the researcher. Network interface analysis was conducted exclusively on a private network and device under the researcher's own control. No third-party devices, networks, or accounts were accessed at any time. No circumvention of access controls was required or performed. All interfaces documented here are accessible using the device's default factory configuration as shipped by the manufacturer.
+
+### Permitted acts
+
+Section 50A CDPA permits the making of back-up copies of lawfully obtained software. Section 296ZE CDPA preserves permitted acts in relation to technical measures and prevents copyright owners from using technological protection measures to prevent lawful acts including those permitted under Section 50B. This research falls within these permitted acts.
+
+### No proprietary assets redistributed
+
+No proprietary source code, compiled binaries, firmware images, or other copyrighted assets belonging to DwarfLab, Tinyphoton Ltd, Rockchip, or any other party are reproduced or redistributed in this repository. Command numbers, field names, and protobuf schema information derived from decompilation are reproduced only to the extent necessary to document communication interfaces for interoperability purposes.
+
+### Database rights
+
+Star catalogue index files present on the device (index-4110.fits, index-4111.fits) may be protected as databases under the Copyright and Rights in Databases Regulations 1997. These files are not reproduced or redistributed in this repository. Their existence, location, and purpose are documented for interoperability purposes only.
+
+### Moral rights
+
+The firmware build strings embedded in the shipped firmware incidentally reveal the names of individuals involved in its compilation. These names are reproduced in this repository only as factual technical information necessary for accurate documentation of the firmware's provenance. No identification claim is made against those individuals under Section 77 CDPA, and no derogatory treatment of their work is intended or implied under Section 80 CDPA.
+
+### Trade secrets
+
+The information documented in this repository was obtained through lawful analysis of a device owned by the researcher and through decompilation permitted under Section 50B CDPA. No information was obtained through any breach of confidence, misappropriation, or any act that would constitute unlawful acquisition under the Trade Secrets (Enforcement, etc.) Regulations 2018. The researcher did not have access to any confidential information belonging to DwarfLab or Tinyphoton Ltd beyond what was discoverable through lawful analysis of the shipped product.
+
+### Intellectual property exhaustion
+
+Under the doctrine of exhaustion of intellectual property rights, DwarfLab's and Tinyphoton Ltd's intellectual property rights in the software installed on the device are exhausted with respect to the researcher's lawful use of that copy following its sale. The SSH access, network analysis, and runtime observation documented here constitute use of a lawfully purchased copy and do not infringe any intellectual property right that has not been exhausted by the first sale.
+
+### Security disclosures
+
+This documentation does not constitute a formal security advisory. Vulnerabilities and security-relevant behaviours noted in this repository (including but not limited to: SSH root access with default credentials common to all units, plaintext storage and logging of WiFi credentials, unauthenticated REST API access, and FTP anonymous read access to the SD card) are described accurately as behaviours present in the device's default shipped configuration. These behaviours were not introduced by this research. The researcher did not exploit these vulnerabilities against any third party.
+
+### Public interest
+
+The security findings documented in this repository are published in the public interest. Purchasers of the Dwarf II have a legitimate interest in understanding the security posture of a networked device operating on their home network. Publication of accurate factual information about a matter of public interest is a defence to any claim in defamation under Section 4 of the Defamation Act 2013. The researcher believes all statements of fact in this repository to be true and has taken reasonable care to verify them.
+
+### Acknowledgement request
+
+If DwarfLab or Tinyphoton Ltd address any of the security issues documented in this repository in a future firmware release, the researcher requests acknowledgement in the relevant release notes or security advisory as the original documenting researcher. Contact: Z.A. Whyman, ORCID [0009-0004-1895-0968](https://orcid.org/0009-0004-1895-0968), GitHub [@TherealJoeyw](https://github.com/TherealJoeyw).
+
+### Disclaimer
+
+This repository is provided for educational and interoperability purposes only. The researcher accepts no liability for any damage, data loss, or other consequences arising from use of the information contained herein. Use of this information to access devices you do not own or have permission to access may constitute an offence under the Computer Misuse Act 1990.
+
+</details>
+
 ---
 
 ## What can I do with this?
