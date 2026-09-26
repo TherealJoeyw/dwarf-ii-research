@@ -123,6 +123,9 @@ These files represent DwarfLab's proprietary sensor tuning and are not redistrib
 
 **`/oem/usr/bin/`** — Rockchip media test binaries including RTSP streaming tools, dual camera test utilities, and NPU test programs
 
+**`/oem/usr/share/rknn_model/`** — additional NPU models shipped with the firmware
+- `ssd_inception_v2_rv1109_rv1126.rknn` — pre-converted SSD Inception V2 object detection model, purpose in the application unknown
+
 **`/oem/wifi/`** — WiFi configuration including hostapd.conf
 
 **`/userdata/cfg/`** — user configuration
@@ -142,13 +145,12 @@ These files represent DwarfLab's proprietary sensor tuning and are not redistrib
 
 **`/userdata/shooting_schedule/`** — saved shooting schedules
 
-**`/root/`** — undocumented NPU models found at the root home directory
-- `model_sky_precompile.rknn` — sky segmentation model, not documented by DwarfLab
-
 **`/system/model/`** — additional undocumented NPU models
-- `ufoseg.rknn` — UFO/object segmentation model, purpose unknown
-- `model_autofocus.rknn` — undocumented autofocus model
-- `model_critic.rknn` — undocumented autofocus model (likely quality/sharpness critic)
+- `model_critic.rknn` — sharpness scoring model. Takes a 224x224 RGB input, outputs a single scalar value (confirmed: sharp image scores ~9.86, blurred image scores ~0). Architecture: 10x ConvolutionReluPoolingLayer2 → PoolingLayer2 → 2x FullyConnectedReluLayer. Used to score and select frames during live stacking.
+- `model_autofocus.rknn` — autofocus quality model. Same architecture as model_critic (10x ConvolutionReluPoolingLayer2 → PoolingLayer2 → 2x FullyConnectedReluLayer), different weights. Takes a 224x224 input, outputs 4 values (confirmed: ~179, ~177, ~174, ~12 on a test image, stable across sharp and blurred inputs). Output likely represents focus quality across spatial regions rather than motor position.
+- `ufoseg.rknn` — segmentation model. Architecture: ConvolutionReluPoolingLayer2 blocks with two bilinear upsampling layers (resize_bilinear_U8toU8_SAME_2x) and a final ActivationLayer — an encoder-decoder (U-Net style) structure that produces a spatial mask rather than a scalar or vector output. Runs at ~18 FPS vs ~60 FPS for the other two models. Output indices shift between clean and contaminated frames, consistent with satellite trail or moving object detection and masking during stacking.
+
+Input size confirmed as 224x224 for all three via `rknn_inference` testing. Sizes above 256x256 cause a segmentation fault in the test tool.
 
 **`/rockchip_test/`** — Rockchip BSP test scripts for CPU, GPU, NPU, camera, audio, and WiFi. Not used in normal operation but left in the firmware. Includes `rknn_inference` and a VGG16 test model.
 
@@ -368,10 +370,6 @@ rtmp://192.168.X.X/live
 ```
 
 Attempts to connect via VLC and other tools have been unsuccessful outside of the official app. The stream may only be active when the DwarfLab app is connected. If it does work, it can be pulled into OBS for live streaming or used as a wildlife/birdwatching webcam without the app. Further investigation needed.
-
-### Video stream endpoints (unconfirmed)
-
-The binary references `GET /mainstream` and `GET /secondstream`, likely the telephoto and wide angle camera streams respectively. The binary uses `libliveMedia` (LIVE555) and references `sendCamTeleStream` and `sendCamWideStream`, suggesting RTSP is involved. Attempts to access these over HTTP and RTSP on all known ports have been unsuccessful. Further investigation needed.
 
 ### NPU inference
 
