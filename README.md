@@ -2,7 +2,7 @@
 
  Documentation of the DwarfLab Dwarf II smart telescope internals, gathered via SSH and network analysis. The goal is to give developers building third-party tools a clear picture of what is running on the device and how to talk to it.
 
-Note: all of the default credentials an detailed here are already known within various astronomy community forums. The purpose of this repository is to consolidate that public knowledge into a structured format, this repository therefore does not constitue a "zero day" as these issues have been public knowledge for years 
+Note: all of the default credentials and such detailed here are already known within various astronomy community forums. The purpose of this repository is to consolidate that public knowledge into a structured format, this repository therefore does not constitue a "zero day" as these issues have been public knowledge for years 
 
 
 This page was written with the assistance of anthropic's Claude sonnet 4.6 model however I manually reviewed it , as you can see by the edit history 
