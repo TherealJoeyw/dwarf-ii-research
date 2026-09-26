@@ -165,9 +165,52 @@ Deleting images in the DwarfLab app does not reliably remove them from the SD ca
 | 1935 | TCP | RTMP | Live video — unconfirmed, see below |
 | 5037 | TCP | ADB | Localhost only |
 | 5555 | TCP | Control API | WebSocket, protocol unconfirmed |
-| 8082 | TCP | Unknown | HTTP, returns 404 on root |
+| 8082 | TCP | HTTP REST API | JSON, POST endpoints, no authentication |
 | 8092 | TCP | Unknown | Likely WebSocket |
 | 9900 | TCP/UDP | Control API | WebSocket — confirmed in binary strings |
+
+### HTTP REST API
+
+Port 8082 serves a JSON REST API from the main `dwarf2` process directly, not a separate service. All endpoints are at `http://DWARF-IP:8082`.
+
+Responses include a `code` field where `0` means success and `-1` indicates missing or invalid parameters.
+
+All confirmed working endpoints require `POST` with `Content-Type: application/json`. An empty JSON body (`{}`) is sufficient for most of them.
+
+> **Security note:** The `/deviceInfo` endpoint returns the connected WiFi password in plaintext to anyone who can reach port 8082. There is no authentication on this port.
+
+#### Confirmed working endpoints
+
+| Endpoint | Returns |
+|----------|---------|
+| `POST /deviceInfo` | Device name, MAC address, BLE service ID, AP and STA IP addresses, SD card info, WiFi SSID and password in plaintext, current WiFi mode |
+| `POST /firmwareVersion` | Major, minor, patch version numbers |
+| `POST /getResetState` | Factory default device name and password, and whether the device has been factory reset |
+| `POST /shootingMode/getSupportedShootingModes` | Full list of shooting modes with IDs and associated shooting technology IDs |
+| `POST /album/list/mediaCounts` | Count of media by type (type IDs: 0–5, exact type names unknown) |
+| `POST /album/astro/fitsList` | Empty response — likely requires session parameters |
+
+Shooting mode IDs returned by `/shootingMode/getSupportedShootingModes`:
+
+| ID | Mode |
+|----|------|
+| 1 | Normal |
+| 2 | DSO |
+| 3 | Sun/Moon |
+| 6 | Auto Tracking |
+| 7 | Panorama |
+| 8 | Sun |
+| 9 | Moon |
+| 10 | Planet |
+
+#### Endpoints returning 501 Not Implemented
+
+These may require GET rather than POST, or may be unimplemented in firmware 2.2.18. `/getDefaultParamsConfig` is confirmed as GET and returns a name/version response with empty `cameras` and `featureParams` arrays.
+
+- `GET /getDefaultParamsConfig`
+- `/logInfo`
+- `/downloadLog`
+- `/checkMd5`
 
 ### WebSocket control API
 
