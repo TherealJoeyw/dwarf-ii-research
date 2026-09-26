@@ -121,7 +121,7 @@ This repository is provided for educational and interoperability purposes only. 
 
 ## What can I do with this?
 
-You do not need to be a developer to get something useful out of this. Here are some things anyone can do with a Dwarf II beyond the official app:
+You do not need to be an embedded linux developer to get something useful out of this. Here are some things anyone could do with a Dwarf II beyond the official app:
 
 **Browse and download your photos without the app**
 Open a web browser on any device connected to the same network as your telescope and go to `http://192.168.X.X/sdcard/` (replace with your telescope's IP). You will see all your captured images and can download them directly.
@@ -132,7 +132,7 @@ The Dwarf II has pan/tilt motors and a decent sensor. You can point it at a bird
 **Host a custom web interface**
 nginx is already running and serving files from `/userdata/www/`. The default page at `http://192.168.X.X/` just says "Success". You can replace `index.html` with your own HTML/JS app and get a persistent browser-based controller accessible from any device on the network, no app install required. Changes survive reboots since `/userdata` is on persistent storage. Firmware updates may overwrite this folder, so you would need to re-deploy after updating. (alternatively and more easily , you can put it on the root directory of the SD card and open it in a browser)
 
-**Stream the live view to OBS or VLC** Both cameras can be streamed live to any MJPEG-capable player without the official app. See the "Live streaming without the app" section for the full setup. The stream works in VLC (Media > Open Network Stream), OBS (Browser source or Media source), ffplay, and any HTTP client that can handle multipart JPEG.
+**Stream the live view to OBS or VLC** Both cameras can in theory be streamed live to any MJPEG-capable player without the official app. See the "Live streaming without the app" section for more info. The stream in theory works in VLC (Media > Open Network Stream), OBS (Browser source or Media source), ffplay, and any HTTP client that can handle multipart JPEG.
 
 **Access the SD card over FTP**
 Connect to `ftp://192.168.X.X` with anonymous login, no password needed. This gives you full read access to the SD card, including all your captured images and session data.
