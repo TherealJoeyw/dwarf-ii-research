@@ -1,8 +1,8 @@
 # Dwarf II Software Internals and Reverse Engineering
 
- Documentation of the DwarfLab Dwarf II smart telescope internals, gathered via SSH and network analysis. The goal is to give developers building third-party tools a clear picture of what is running on the device and how to talk to it.
+ Documentation of the DwarfLab Dwarf II smart telescope internals, gathered via SSH and network analysis. The goal is to give developers building third-party tools a clear picture of what is running on this amazing device and how to talk to it and make it even better than anyone would have expected!
 
->  **Note:** all of the default credentials and such detailed here are already known within various astronomy community forums. The purpose of this repository is to consolidate that public knowledge into a structured format, this repository therefore does not constitue a "zero day" because of that and the fact that [Dwarflab publish some of the more damming infomation on their owm website](https://help.dwarflab.com/en/docs/How-to-View-and-Edit-Files-in-DWARF-2#1-3-ftp-mode-compatible-with-windows-mac) 
+>  **Note:** all of the default credentials and such detailed here are already known within various astronomy community forums. The purpose of this repository is to consolidate that public knowledge into a structured format, this repository therefore does not constitue a "zero day" because of that and the fact that [Dwarflab publish some of the more significant infomation on their owm website](https://help.dwarflab.com/en/docs/How-to-View-and-Edit-Files-in-DWARF-2#1-3-ftp-mode-compatible-with-windows-mac) 
 
 > **Note:** The Dwarf II ships with default credentials and an open network interface that makes it easy to access and extend. However this is also a security vulnerability. See the [Default Credentials](#default-credentials) section and the below dropdown for details.
 
