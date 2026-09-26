@@ -177,7 +177,7 @@ Deleting images in the DwarfLab app does not reliably remove them from the SD ca
 | 5037 | TCP | ADB | Localhost only |
 | 5555 | TCP | Control API | WebSocket, protocol unconfirmed |
 | 8082 | TCP | HTTP REST API | JSON, POST endpoints, no authentication |
-| 8092 | TCP | Unknown | Likely WebSocket |
+| 8092 | TCP | HTTP media server | Camera streams and time sync — stream format unconfirmed |
 | 9900 | TCP/UDP | Control API | WebSocket — confirmed in binary strings |
 
 ### HTTP REST API
@@ -223,6 +223,19 @@ These may require GET rather than POST, or may be unimplemented in firmware 2.2.
 - `/downloadLog`
 - `/checkMd5`
 
+### HTTP media server (port 8092)
+
+Port 8092 is an HTTP server serving camera streams and a time-sync endpoint, confirmed from the [dwarfii_api](https://github.com/DwarfTelescopeUsers/dwarfii_api) source. All endpoints are at `http://DWARF-IP:8092`.
+
+| Endpoint | Description |
+|----------|-------------|
+| `GET /mainstream` | Telephoto camera stream |
+| `GET /thirdstream` | Wide angle camera stream |
+| `GET /rawstream` | Raw preview stream |
+| `GET /date?date=<yyyy-mm-dd hh:mm:ss>` | Set device UTC time |
+
+The stream format (MJPEG or RTSP-over-HTTP) has not yet been confirmed.
+
 ### WebSocket control API
 
 The main control API runs on port 9900 over WebSocket with JSON messages:
@@ -239,15 +252,65 @@ Messages use an `interface` field (not `cmd`) to identify the command, followed 
 
 A keep-alive is required: send both a WebSocket ping frame and a `"ping"` text message; the device responds with `"pong"`.
 
-Known interface numbers:
+#### V1 API command reference
 
-| Interface | Command |
-|-----------|---------|
-| 11004 | `shutDown` |
-| 11011 | `chargingStatus` |
-| 11203 | `startGoto` |
-| 11405 | `microsdStatus` |
-| 11410 | `softwareVersion` |
+The following interface numbers are confirmed from the [dwarfii_api](https://github.com/DwarfTelescopeUsers/dwarfii_api) npm package (DwarfTelescopeUsers, 2023). These are V1 API numbers for firmware 2.x. The V2 API used by newer firmware uses a different protobuf-based `WsPacket` format and may differ. REST endpoints on port 8082 such as `/deviceInfo` and `/firmwareVersion` are separate and not listed here.
+
+Most commands require a `camId` parameter: `0` for telephoto, `1` for wide angle.
+
+| Interface | Name | Description |
+|-----------|------|-------------|
+| 10000 | `turnOnCameraCmd` | Start camera preview |
+| 10001 | `setExposureModeCmd` | Set exposure mode (0=auto, 1=manual) |
+| 10003 | `setExposureValueCmd` | Set exposure value |
+| 10004 | `setGainModeCmd` | Set gain mode |
+| 10005 | `setGainValueCmd` | Set gain value |
+| 10006 | `takePhotoCmd` | Take photo (0=single, 1=continuous) |
+| 10007 | `startRecordingCmd` | Start video recording |
+| 10009 | `stopRecordingCmd` | Stop video recording |
+| 10011 | `takeAstroPhotoCmd` | Start RAW astro capture |
+| 10014 | `numberRawImagesCmd` | Query number of RAW images taken |
+| 10015 | `stopAstroPhotoCmd` | Stop RAW astro capture |
+| 10016 | `previewImageQuality` | Set preview image quality |
+| 10017 | `turnOffCameraCmd` | Stop camera preview |
+| 10018 | `startTimelapseCmd` | Start timelapse |
+| 10019 | `stopTimelapseCmd` | Stop timelapse |
+| 10020 | `setRAWPreviewCmd` | Switch RAW preview source (0=continuous superimpose, 1=single 15s, 2=single composite) |
+| 10022 | `statusWorkingStateTelephotoCmd` | Get telephoto working state |
+| 10023 | `numberSuperImposedImages` | Query number of stacked frames |
+| 10026 | `takeAstroDarkFramesCmd` | Take dark calibration frames |
+| 10027 | `queryShotFieldCmd` | Query shot field |
+| 10100 | `startMotionCmd` | Start motor (1=spin, 2=pitch) |
+| 10101 | `stopMotionCmd` | Stop motor |
+| 10103 | `startPanoCmd` | Start panoramic capture |
+| 10106 | `stopPanoCmd` | Stop panoramic capture |
+| 10107 | `setSpeedCmd` | Set motor speed |
+| 10108 | `setDirectionCmd` | Set motor direction (0=anticlockwise, 1=clockwise) |
+| 10109 | `setSubdivideCmd` | Set motor microstep subdivide |
+| 10203 | `setIRCmd` | Set IR filter (0=IR cut, 3=IR pass) |
+| 10204 | `setBrightnessValueCmd` | Set brightness |
+| 10205 | `setContrastValueCmd` | Set contrast |
+| 10206 | `setSaturationValueCmd` | Set saturation |
+| 10207 | `setHueValueCmd` | Set hue |
+| 10208 | `setSharpnessValueCmd` | Set sharpness |
+| 10211 | `autofocusCmd` | Autofocus (0=global, 1=area) |
+| 10212 | `setWhiteBalanceModeCmd` | Set white balance mode |
+| 10213 | `setWhiteBalanceScenceCmd` | Set white balance scene preset |
+| 10214 | `setWhiteBalanceColorCmd` | Set white balance colour temperature |
+| 10215 | `statusTelephotoCmd` | Get telephoto ISP status |
+| 10216 | `statusIRTelephotoCmd` | Get IR status |
+| 10217 | `statusWideangleCmd` | Get wide angle ISP status |
+| 11004 | `shutDownCmd` | Shut down device |
+| 11011 | `dwarfChargingStatusCmd` | Get charging status |
+| 11200 | `traceInitCmd` | Initialise tracking |
+| 11201 | `startTrackingCmd` | Start object tracking |
+| 11202 | `stopTrackingCmd` | Stop object tracking |
+| 11203 | `startGotoCmd` | Goto target (RA/Dec or planet index) |
+| 11205 | `calibrateGotoCmd` | Calibrate goto (requires lat/lon/date) |
+| 11405 | `microsdStatusCmd` | Get MicroSD card status |
+| 11407 | `systemStatusCmd` | Get system status |
+| 11409 | `microsdAvailableCmd` | Get MicroSD available space |
+| 11410 | `dwarfSoftwareVersionCmd` | Get software version |
 
 The API does not appear to respond to status queries without an active app session — further investigation needed.
 
