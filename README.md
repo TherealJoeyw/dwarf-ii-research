@@ -2,7 +2,7 @@
 
  Documentation of the DwarfLab Dwarf II smart telescope internals, gathered via SSH and network analysis. The goal is to give developers building third-party tools a clear picture of what is running on the device and how to talk to it.
 
->  **Note:** all of the default credentials and such detailed here are already known within various astronomy community forums. The purpose of this repository is to consolidate that public knowledge into a structured format, this repository therefore does not constitue a "zero day" as [these issues have been public knowledge for years](https://www.cloudynights.com/forums/topic/917303-using-my-seestar-s50-or-dwarf-2-over-the-internet-using-2-raspberry-pis/)
+>  **Note:** all of the default credentials and such detailed here are already known within various astronomy community forums. The purpose of this repository is to consolidate that public knowledge into a structured format, this repository therefore does not constitue a "zero day" as [these issues have been public knowledge for years](https://www.cloudynights.com/forums/topic/917303-using-my-seestar-s50-or-dwarf-2-over-the-internet-using-2-raspberry-pis/) to the point where google AI preview will just straight up tell you this stuff
 
 > **Note:** The Dwarf II ships with default credentials and an open network interface that makes it easy to access and extend. However this is also a security vulnerability. See the [Default Credentials](#default-credentials) section and the below dropdown for details.
 
