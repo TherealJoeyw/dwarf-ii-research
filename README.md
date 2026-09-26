@@ -23,9 +23,9 @@ The built-in remote access tools use the same login details on every unit worldw
 
 **What you should do:**
 
-- Open the DwarfLab app, go to Settings, and change the device password before you use it anywhere outside your home
-- Do not connect it to public WiFi, hotel WiFi, or any shared network
-- If you take it to a star party or any public event, assume the default password is known to other people there and change it first
+- Open the DwarfLab app, go to Me > My Device > Device Password, and change the device password to something longer than 8 letters and/or numbers before you use it anywhere outside your home
+- Do not connect it to public WiFi, hotel WiFi, or any shared network.
+- If you take it to a star party or any public event, assume the default password is known to other people there and change it first.
 - If you do connect it to your home network, be aware that this is less secure than using its own hotspot
 
 </details>
@@ -661,3 +661,12 @@ This is a community effort. PRs and issues are welcome. If you find something no
 - [grosseruser/dwarf2-html](https://github.com/grosseruser/dwarf2-html) — web frontend for the Dwarf II
 - [airockchip/rknn_model_zoo](https://github.com/airockchip/rknn_model_zoo) — pre-converted RKNN models ready to run on the NPU
 - [API V2 documentation](https://tinyphoton.feishu.cn/docx/GBkcdldTIo3SrdxFJDscYVYDnvf) — official DwarfLab WebSocket API docs
+
+## Changelog
+
+| Date | Firmware | Changes |
+|------|----------|---------|
+| 16 September 2026 | 2.2.18 | Initial session — SSH access, hardware identification, filesystem layout, open ports, WebSocket protocol noted, README created |
+| 22 September 2026 | 2.2.18 | Shell access confirmed, RV1126 SoC verified, embedded Linux environment documented |
+| 26 September 2026 | 2.2.18 | Port 8092 confirmed MJPEG, port 5555 confirmed ADB, NPU models characterised, motor axes confirmed, wide camera hardware ID, GPS EXIF confirmed, REST API on 8082 documented |
+| 26 September 2026 | 2.2.18 | APK decompilation — full WebSocket V2 protobuf protocol, complete command table, module ID mapping, MJPEG stream activation confirmed for both cameras, RTMP confirmed dead end, security analysis added |
