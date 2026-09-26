@@ -4,6 +4,8 @@ Community documentation of the DwarfLab Dwarf II smart telescope internals, gath
 
 This page was written with the assistance of anthropic's Claude sonnet 4.6 model however I manually reviewed it , as you can see by the edit history 
 
+Last updated: September 26th 2026
+
 > **Note:** The Dwarf II ships with default credentials and an open network interface that makes it easy to access and extend. However this is also a security vulnerability on public Wi-Fi networks. See the [Default Credentials](#default-credentials) section for details.
 
 <details>
@@ -61,7 +63,7 @@ The security findings documented in this repository are published in the public 
 
 ### Acknowledgement request
 
-If DwarfLab or Tinyphoton Ltd address any of the security issues documented in this repository in a future firmware release, the researcher requests acknowledgement in the relevant release notes or security advisory as the original documenting researcher. Contact: Z.A. Whyman, ORCID [0009-0004-1895-0968](https://orcid.org/0009-0004-1895-0968), GitHub [@TherealJoeyw](https://github.com/TherealJoeyw).
+If DwarfLab or Tinyphoton Ltd address any of the security issues documented in this repository in a future firmware release, the researcher requests acknowledgement in the relevant release notes or security advisory as the original documenting researcher. Contact: Z.A. Whyman, ORCID [0009-0004-1895-0968](https://orcid.org/0009-0004-1895-0968). 
 
 ### Disclaimer
 
@@ -69,7 +71,7 @@ This repository is provided for educational and interoperability purposes only. 
 
 </details>
 (In plain English: I bought it, I own it, and UK law specifically says the manufacturer cannot use copyright or technical protection measures to stop me from doing this.)
----
+
 
 ## What can I do with this?
 
