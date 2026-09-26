@@ -175,10 +175,23 @@ Deleting images in the DwarfLab app does not reliably remove them from the SD ca
 | 80 | TCP | HTTP (nginx) | Web interface and SD card browser |
 | 1935 | TCP | RTMP | Live video — unconfirmed, see below |
 | 5037 | TCP | ADB | Localhost only |
-| 5555 | TCP | Control API | WebSocket, protocol unconfirmed |
+| 5555 | TCP | ADB (adbd) | Android Debug Bridge daemon, ADB over TCP, no authentication required |
 | 8082 | TCP | HTTP REST API | JSON, POST endpoints, no authentication |
 | 8092 | TCP | HTTP media server | Camera streams and time sync — stream format unconfirmed |
 | 9900 | TCP/UDP | Control API | WebSocket — confirmed in binary strings |
+
+### ADB access
+
+Port 5555 runs `adbd`, the Android Debug Bridge daemon, confirmed by cross-referencing `/proc/<pid>/cmdline` against the socket inode in `/proc/net/tcp`. No authentication is required.
+
+Connect using [Android Platform Tools](https://developer.android.com/tools/releases/platform-tools):
+
+```
+adb connect <ip>:5555
+adb shell
+```
+
+This gives a root shell without needing SSH credentials, and is an alternative access path if the SSH password has been changed. `adb pull` can also be used for bulk file transfer from the SD card, which is faster than FTP for large amounts of data.
 
 ### HTTP REST API
 
