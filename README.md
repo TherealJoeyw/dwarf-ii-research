@@ -1,4 +1,4 @@
-# Dwarf II Software Internals
+# Dwarf II Software Internals and reverse engineering
 
  Documentation of the DwarfLab Dwarf II smart telescope internals, gathered via SSH and network analysis. The goal is to give developers building third-party tools a clear picture of what is running on the device and how to talk to it.
 
