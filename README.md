@@ -34,7 +34,7 @@ The built-in remote access tools use the same login details on every unit worldw
 <details>
 <summary>Legal notices</summary>
 
-For the purposes of this section, "the researcher" , "the author" and similar terms refer to Z.A. Whyman / J.A. Whyman (ORCID: [0009-0004-1895-0968](https://orcid.org/0009-0004-1895-0968)).
+For the purposes of this document, "the researcher" , "the author" and similar terms refer to Z.A. Whyman / J.A. Whyman (ORCID: [0009-0004-1895-0968](https://orcid.org/0009-0004-1895-0968)).
 
 ### Jurisdiction and applicable law
 
