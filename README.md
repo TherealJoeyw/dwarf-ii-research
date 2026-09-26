@@ -82,6 +82,9 @@ For developers, the sections below document the hardware, running software, netw
 | `vsftpd` | FTP server — anonymous access to SD card |
 | `avahi-daemon` | mDNS/Bonjour |
 | `bsa_server` | Bluetooth stack |
+| `adbd` | Android Debug Bridge daemon — port 5037 localhost only |
+
+A `voiceAssistant.cpp` exists in the source tree, suggesting a voice assistant component is present in the firmware. Its interface is undocumented and it is not known whether the feature is active in shipping firmware.
 
 ---
 
@@ -138,6 +141,14 @@ These files represent DwarfLab's proprietary sensor tuning and are not redistrib
 - `ble_wifi/ble_wifi.log` — Bluetooth/WiFi setup log
 
 **`/userdata/shooting_schedule/`** — saved shooting schedules
+
+**`/root/`** — undocumented NPU models found at the root home directory
+- `model_sky_precompile.rknn` — sky segmentation model, not documented by DwarfLab
+
+**`/system/model/`** — additional undocumented NPU models
+- `ufoseg.rknn` — UFO/object segmentation model, purpose unknown
+- `model_autofocus.rknn` — undocumented autofocus model
+- `model_critic.rknn` — undocumented autofocus model (likely quality/sharpness critic)
 
 **`/rockchip_test/`** — Rockchip BSP test scripts for CPU, GPU, NPU, camera, audio, and WiFi. Not used in normal operation but left in the firmware. Includes `rknn_inference` and a VGG16 test model.
 
@@ -220,7 +231,25 @@ The main control API runs on port 9900 over WebSocket with JSON messages:
 ws://192.168.X.X:9900
 ```
 
-Messages use a JSON `WsPacket` wrapper with `cmd` and `data` fields. A keep-alive is required: send both a WebSocket ping frame and a `"ping"` text message; the device responds with `"pong"`.
+Messages use an `interface` field (not `cmd`) to identify the command, followed by any parameters for that command:
+
+```json
+{"interface": 11203, "ra": 83.82, "dec": -5.39}
+```
+
+A keep-alive is required: send both a WebSocket ping frame and a `"ping"` text message; the device responds with `"pong"`.
+
+Known interface numbers:
+
+| Interface | Command |
+|-----------|---------|
+| 11004 | `shutDown` |
+| 11011 | `chargingStatus` |
+| 11203 | `startGoto` |
+| 11405 | `microsdStatus` |
+| 11410 | `softwareVersion` |
+
+The API does not appear to respond to status queries without an active app session — further investigation needed.
 
 See [DwarfTelescopeUsers](https://github.com/DwarfTelescopeUsers) and [stevejcl/dwarf_test_apiV2](https://github.com/stevejcl/dwarf_test_apiV2) for community API documentation and Python bindings.
 
