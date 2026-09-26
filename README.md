@@ -191,7 +191,7 @@ For developers, the sections below document the hardware, running software, netw
 | GPU | 2D graphics engine + Rockchip RGA accelerator |
 | VPU | 4K H.264/H.265 encode and decode |
 | RAM | ~1.8GB |
-| Sensor | Sony IMX415 Starvis — 8MP telephoto, 2MP wide |
+| Sensor | Sony IMX415 Starvis — 8MP telephoto, Sunplus SPCA2281 - 2MP wide |
 | Lens module | YT10092 with IR0147-28IRC lens, F2.0 aperture |
 
 ---
