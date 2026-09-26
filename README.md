@@ -15,7 +15,7 @@ Last updated: September 26th 2026
 
 Imagine anyone within about 50 metres of you has the same level of access to your telescope as you do. That is roughly the security situation with the default settings.
 
-The telescope creates its own WiFi network with a password that is identical on every Dwarf II ever sold. If someone nearby knows that password — and it is publicly available online — they can connect to your telescope without you knowing. Once connected they can see everything on your SD card, take control of the motors and camera, and in some configurations retrieve the password to your home WiFi network.
+The telescope creates its own WiFi network with a password that is identical on every Dwarf II ever sold. If someone nearby knows that password — and it is publicly available online even before i made this repository, they can connect to your telescope without you knowing. Once connected they can see everything on your SD card, take control of the motors and camera, and in some configurations retrieve the password to every WiFi network it has been connected to since it was factory reset last.
 
 If you plug it into your home network instead of using its own hotspot, anyone else already on that network has the same access. This includes family members, housemates, and any guests you have given your WiFi password to.
 
