@@ -6,7 +6,7 @@ This page was written with the assistance of anthropic's Claude sonnet 4.6 model
 
 Last updated: September 26th 2026
 
-> **Note:** The Dwarf II ships with default credentials and an open network interface that makes it easy to access and extend. However this is also a security vulnerability on public Wi-Fi networks. See the [Default Credentials](#default-credentials) section and the below dropdown for details.
+> **Note:** The Dwarf II ships with default credentials and an open network interface that makes it easy to access and extend. However this is also a security vulnerability. See the [Default Credentials](#default-credentials) section and the below dropdown for details.
 
 <details>
 <summary>⚠️ IMPORTANT — Plain English Security Information — please read before use</summary>
