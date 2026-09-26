@@ -15,11 +15,11 @@ This research was conducted in England and Wales and is governed by English law.
 
 ### Interoperability research
 
-This repository contains original interoperability research conducted under Section 50B of the Copyright, Designs and Patents Act 1988 (CDPA), which permits decompilation of a computer program for the purpose of obtaining information necessary to create an independent program capable of interoperability with it. The decompilation was limited to obtaining interface information and did not exceed what was necessary for that purpose. The information obtained has not been used for any purpose other than the creation of interoperable software, and has not been supplied to any third party except as permitted under Section 50B(3). This research is also consistent with Article 6 of EU Directive 2009/24/EC on the legal protection of computer programs and its UK retained equivalent.
+This repository contains original interoperability research conducted under Section 50B of the Copyright, Designs and Patents Act 1988 (CDPA), which permits decompilation of a computer program for the purpose of obtaining information necessary to create an independent program capable of interoperability with it. The decompilation was limited to obtaining interface information and did not exceed what was necessary for that purpose. The information obtained has not been used for any purpose other than the creation of interoperable software and for the authors personal enjoyment, and has not been supplied to any third party except as permitted under Section 50B(3). This research is also consistent with Article 6 of EU Directive 2009/24/EC on the legal protection of computer programs and its UK retained equivalent.
 
 ### Ownership and authorisation
 
-All research was conducted on a device lawfully acquired and owned by the researcher. Network interface analysis was conducted exclusively on a private network and device under the researcher's own control. No third-party devices, networks, or accounts were accessed at any time. No circumvention of access controls was required or performed. All interfaces documented here are accessible using the device's default factory configuration as shipped by the manufacturer.
+All research was conducted on a device lawfully acquired and owned by the researcher. Network interface analysis was conducted exclusively on a private network and device under the researcher's own control or one that the author is lawfully authorised to use. No third-party devices, networks, or accounts were unlawfully accessed at any time. No circumvention of access controls was required or performed. All interfaces documented here are accessible using the device's default factory configuration as shipped by the manufacturer or when settings are changed in the app.
 
 ### Permitted acts
 
@@ -68,7 +68,7 @@ If DwarfLab or Tinyphoton Ltd address any of the security issues documented in t
 This repository is provided for educational and interoperability purposes only. The researcher accepts no liability for any damage, data loss, or other consequences arising from use of the information contained herein. Use of this information to access devices you do not own or have permission to access may constitute an offence under the Computer Misuse Act 1990.
 
 </details>
-
+(In plain English: I bought it, I own it, and UK law specifically says the manufacturer cannot use copyright or technical protection measures to stop me from doing this.)
 ---
 
 ## What can I do with this?
