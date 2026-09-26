@@ -22,7 +22,7 @@ The Dwarf II has pan/tilt motors and a decent sensor. You can point it at a bird
 nginx is already running and serving files from `/userdata/www/`. The default page at `http://192.168.X.X/` just says "Success". You can replace `index.html` with your own HTML/JS app and get a persistent browser-based controller accessible from any device on the network, no app install required. Changes survive reboots since `/userdata` is on persistent storage. Firmware updates may overwrite this folder, so you would need to re-deploy after updating.
 
 **Stream the live view to OBS or VLC**
-The MJPEG stream on port 8092 (`/mainstream` for telephoto) can be opened in VLC via Media > Open Network Stream or used as a media source in OBS. The RTMP server on port 1935 is a BSP leftover and is not used by the DwarfLab app — see the Network section for details.
+The MJPEG stream on port 8092 works in VLC, OBS, ffplay, or any MJPEG player. It requires an active WebSocket session to activate — see the [Live streaming without the app](#live-streaming-without-the-app) section for the full connection sequence and a ready-to-run Python script.
 
 **Access the SD card over FTP**
 Connect to `ftp://192.168.X.X` with anonymous login, no password needed. This gives you full read access to the SD card, including all your captured images and session data.
@@ -35,6 +35,31 @@ SSH is open on port 22. The default credentials are `root` / `rockchip`. This gi
 
 **Run custom AI models on the NPU**
 The Rockchip NPU is directly accessible via the `rknn_inference` command line tool over SSH. Any model converted to RKNN format can be run at 50-70 FPS on the device itself, without any external compute. Potential uses include bird species classification, custom object detection, or astronomical object recognition. Rockchip maintain an official model zoo at [airockchip/rknn_model_zoo](https://github.com/airockchip/rknn_model_zoo) with pre-converted models ready to run.
+
+---
+
+## Live streaming without the app
+
+The MJPEG stream on port 8092 can be accessed without the official app, but the device requires an active WebSocket session on port 9900 before it will serve frames. If the WebSocket session closes, the stream stops.
+
+**Working stream URLs:**
+
+- Telephoto: `http://<device-ip>:8092/mainstream`
+- Wide angle: `http://<device-ip>:8092/secondstream`
+
+These work in VLC, ffplay, OBS, or any MJPEG-capable player once the WebSocket session is active. See `dwarf_stream.py` in this repo for a ready-to-run Python script that handles the full connection sequence and opens the stream automatically. It requires `pip install websocket-client` and ffmpeg.
+
+**Required WebSocket command sequence to activate the stream:**
+
+1. Connect to `ws://<device-ip>:9900/?client_id=<any-uuid>`
+2. Send `CMD_GLOBAL_TASK_MANAGER_ENTER_CAMERA` (16404) with protobuf payload `ReqEnterCamera { client_param: ClientParams { encode_type: 1 } }`
+3. Send `CMD_CAMERA_TELE_SET_RTSP_BITRATE_TYPE` (10042) with payload `{ bitrate_type: 1 }` for telephoto, or `CMD_CAMERA_WIDE_SET_RTSP_BITRATE_TYPE` (12032) for wide angle
+4. Send `CMD_CAMERA_TELE_GET_SYSTEM_WORKING_STATE` (10039) for telephoto, or `CMD_CAMERA_WIDE_GET_EXP_MODE` (12003) for wide angle
+5. Send `CMD_CAMERA_TELE_SET_PREVIEW_QUALITY` (10050) with payload `{ level: 1 }` for telephoto, or `CMD_CAMERA_WIDE_SET_PREVIEW_QUALITY` (12036) for wide angle
+6. Send a `"ping"` text message every 5 seconds to keep the session alive
+7. Open `http://<device-ip>:8092/mainstream` (telephoto) or `/secondstream` (wide angle)
+
+Command names and protobuf structures from APK decompilation of `com.convergence.dwarflab` (September 2026). See the WsCmd section for numeric values and module assignments.
 
 ---
 
@@ -272,12 +297,13 @@ Port 8092 is an HTTP server serving camera streams and a time-sync endpoint, con
 
 | Endpoint | Description |
 |----------|-------------|
-| `GET /mainstream` | Telephoto camera stream |
-| `GET /thirdstream` | Wide angle camera stream |
+| `GET /mainstream` | Telephoto camera stream (confirmed working) |
+| `GET /secondstream` | Wide angle camera stream (confirmed working) |
+| `GET /thirdstream` | Wide angle camera stream (alternate path — returns empty without active app session) |
 | `GET /rawstream` | Raw preview stream |
 | `GET /date?date=<yyyy-mm-dd hh:mm:ss>` | Set device UTC time |
 
-The telephoto stream (`/mainstream`) is confirmed to serve `multipart/x-mixed-replace` with boundary `dwarf` — standard MJPEG over HTTP. The wide angle stream (`/thirdstream`) returns an empty response without an active app session.
+The telephoto stream (`/mainstream`) is confirmed to serve `multipart/x-mixed-replace` with boundary `dwarf` — standard MJPEG over HTTP. The confirmed working wide angle URL is `/secondstream`. Both streams require an active WebSocket session on port 9900 — see [Live streaming without the app](#live-streaming-without-the-app) for the activation sequence.
 
 ### WebSocket control API
 
@@ -291,9 +317,9 @@ ws://<device-ip>:9900/?client_id=<uuid>
 
 The `client_id` is a random UUID generated once by the app and persisted in MMKV storage under key `data_default_client_id` in the `device` store. For third-party clients, generate any valid UUID (v4 recommended) and reuse it across connections to the same device.
 
-**Claiming the master client slot:** After connecting, send `CMD_SYSTEM_SET_MASTER` (cmd 13004) to claim the master client role. The first client to send this becomes the master client and is assigned control authority.
+**Master client:** The device automatically assigns master status to the first client that connects based on the `client_id` in the URL. You can also claim it explicitly by sending `CMD_SYSTEM_SET_MASTER` (cmd 13004) after connecting.
 
-**Keep-alive:** Send a keep-alive ping every 40 seconds. The device responds with `"pong"`. Previous notes stating 5 seconds were incorrect. Send both a WebSocket ping frame and the `"ping"` text message.
+**Keep-alive:** Send a `"ping"` text message every 5 seconds; the device responds with `"pong"`. The WebSocket protocol-level ping interval is 40 seconds. Send both.
 
 **Close codes:**
 - `4409` — Normal disconnect. The device sends a generation counter used to reject stale reconnects. Reconnect normally.
@@ -315,6 +341,8 @@ The V2 API (current firmware) uses a protobuf-encoded `WsPacket` for all message
 | 8 | `client_id` | string |
 
 The `module_id` field is derived from the `cmd` value using the module ranges listed in the WsCmd section below. The `data` field carries the command-specific protobuf payload.
+
+The `type` field (field 6) indicates message direction: `0` = request, `1` = response, `2` = notification, `3` = reply.
 
 #### V1 API command reference
 
@@ -382,35 +410,44 @@ See [DwarfTelescopeUsers](https://github.com/DwarfTelescopeUsers) and [stevejcl/
 
 ### WsCmd command modules
 
-The `WsCmd` enum from the decompiled APK defines all commands and their module assignments by numeric range. The `module_id` field in `WsPacket` corresponds to these ranges.
+The `WsCmd` enum from the decompiled APK defines all commands and their module assignments by numeric range. The `module_id` field in `WsPacket` carries the numeric module ID, not the name.
 
-| Cmd range | Module name |
-|-----------|-------------|
-| 10000–10499 | `MODULE_CAMERA_TELE` |
-| 11000–11499 | `MODULE_ASTRO` |
-| 12000–12499 | `MODULE_CAMERA_WIDE` |
-| 13000–13299 | `MODULE_SYSTEM` |
-| 13500–13799 | `MODULE_RGB_POWER` |
-| 14000–14499 | `MODULE_MOTOR` |
-| 14800–14899 | `MODULE_TRACK` |
-| 15000–15199 | `MODULE_FOCUS` |
-| 15200–15499 | `MODULE_NOTIFY` |
-| 15500–15599 | `MODULE_PANORAMA` |
-| 15700–15799 | `MODULE_ITIPS` |
-| 16100–16399 | `MODULE_SHOOTING_SCHEDULE` |
-| 16400–16599 | `MODULE_TASK_CENTER` |
-| 16700–16799 | `MODULE_PARAM` |
-| 16800–16899 | `MODULE_VOICE_ASSISTANT` |
-| 16900–16999 | `MODULE_CAMERA_GUIDE` |
-| 17000–17099 | `MODULE_DEVICE` |
+| Cmd range | Module name | module_id value |
+|-----------|-------------|-----------------|
+| — | `MODULE_NONE` | 0 |
+| 10000–10499 | `MODULE_CAMERA_TELE` | 1 |
+| 12000–12499 | `MODULE_CAMERA_WIDE` | 2 |
+| 11000–11499 | `MODULE_ASTRO` | 3 |
+| 13000–13299 | `MODULE_SYSTEM` | 4 |
+| 13500–13799 | `MODULE_RGB_POWER` | 5 |
+| 14000–14499 | `MODULE_MOTOR` | 6 |
+| 14800–14899 | `MODULE_TRACK` | 7 |
+| 15000–15199 | `MODULE_FOCUS` | 8 |
+| 15200–15499 | `MODULE_NOTIFY` | 9 |
+| 15500–15599 | `MODULE_PANORAMA` | 10 |
+| 15700–15799 | `MODULE_ITIPS` | 11 |
+| — | `MODULE_FACTORY_TEST` | 12 |
+| 16100–16399 | `MODULE_SHOOTING_SCHEDULE` | 13 |
+| 16400–16599 | `MODULE_TASK_CENTER` | 14 |
+| 16700–16799 | `MODULE_PARAM` | 15 |
+| 16800–16899 | `MODULE_VOICE_ASSISTANT` | 16 |
+| 16900–16999 | `MODULE_CAMERA_GUIDE` | 17 |
+| 17000–17099 | `MODULE_DEVICE` | 18 |
 
-Selected named commands from the decompile:
+Named commands from the decompile, including those required for stream activation:
 
 | Cmd | Name |
 |-----|------|
+| 10039 | `CMD_CAMERA_TELE_GET_SYSTEM_WORKING_STATE` |
+| 10042 | `CMD_CAMERA_TELE_SET_RTSP_BITRATE_TYPE` |
+| 10050 | `CMD_CAMERA_TELE_SET_PREVIEW_QUALITY` |
+| 12003 | `CMD_CAMERA_WIDE_GET_EXP_MODE` |
+| 12032 | `CMD_CAMERA_WIDE_SET_RTSP_BITRATE_TYPE` |
+| 12036 | `CMD_CAMERA_WIDE_SET_PREVIEW_QUALITY` |
 | 13004 | `CMD_SYSTEM_SET_MASTER` |
 | 13010 | `CMD_SYSTEM_SET_LOCATION` |
 | 15234 | `CMD_NOTIFY_STREAM_TYPE` |
+| 16404 | `CMD_GLOBAL_TASK_MANAGER_ENTER_CAMERA` |
 | 16405 | `CMD_GLOBAL_TASK_GET_DEVICE_STATE_INFO` |
 
 `CMD_NOTIFY_STREAM_TYPE` (15234) carries a `StreamType` protobuf with field 1 `stream_type` (int) and field 2 `cam_id` (int, 0=telephoto, 1=wide angle). The device sends this to notify the app when the active stream format changes. See stream type values in the RTMP/stream types section below.
@@ -447,7 +484,7 @@ Note: `device.db` displays a timestamp of 01-Jan-2038 due to a Unix timestamp ov
 
 ### RTMP (dead end)
 
-RTMP on port 1935 is a dead end. APK decompilation of `com.convergence.dwarflab` confirms the app has no RTMP stream type — only RTSP (1) and JPEG (2), defined in `StreamTypeAnn`. The RTMP server process visible on port 1935 is almost certainly a Rockchip BSP leftover that the DwarfLab application never activates. No further investigation is warranted.
+RTMP on port 1935 is a dead end. APK decompilation of `com.convergence.dwarflab` confirms the app has no RTMP stream type — only RTSP (1) and JPEG/MJPEG (2), defined in `StreamTypeAnn`. The RTMP server process visible on port 1935 is almost certainly a Rockchip BSP leftover that the DwarfLab application never activates. Use the MJPEG stream on port 8092 instead.
 
 ### Stream types
 
