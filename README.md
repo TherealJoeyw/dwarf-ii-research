@@ -62,7 +62,7 @@ The use of AI assistance in research and documentation does not, in the research
 
 ### No proprietary assets redistributed
 
-No proprietary source code, compiled binaries, firmware images, or other copyrighted assets belonging to DwarfLab, Tinyphoton Ltd, Rockchip, or any other party other than the author are reproduced or redistributed in this repository. Command numbers, field names, and protobuf schema information derived from decompilation are reproduced only to the extent necessary to document communication interfaces for interoperability purposes.
+No proprietary source code, compiled binaries, firmware images, or other copyrighted assets belonging to DwarfLab, Tinyphoton Ltd, Rockchip, or any other party other than the author are reproduced or redistributed in this repository. The decompiled API structures, command numbers, field names, and protobuf schema information in this repository are published specifically for the purpose of enabling interoperability with third-party tools, which is the purpose for which Section 50B CDPA 1988 permits decompilation. They are reproduced only to the extent necessary to document communication interfaces for that purpose, and no compiled binaries or proprietary source code are included.
 
 ### Database rights
 
@@ -92,16 +92,21 @@ The security findings documented in this repository are published in the public 
 
 ### Acknowledgement request
 
-If DwarfLab or Tinyphoton Ltd address any of the security issues documented in this repository in a future firmware release, the researcher requests acknowledgement in the relevant release notes or security advisory as the original documenting researcher. Contact: Z.A. Whyman, ORCID [0009-0004-1895-0968](https://orcid.org/0009-0004-1895-0968). 
+If DwarfLab or Tinyphoton Ltd address any of the security issues documented in this repository in a future firmware release, the researcher would welcome acknowledgement in the relevant release notes or security advisory as the original documenting researcher. This is a courtesy request and not a condition of fixing any security issue. Contact: Z.A. Whyman, ORCID [0009-0004-1895-0968](https://orcid.org/0009-0004-1895-0968).
 
 ### Unjust enrichment
 
-The researcher reserves the right to seek acknowledgement for any findings, methodologies, or documented interfaces from this repository that are incorporated into official DwarfLab or Tinyphoton Ltd products, documentation, or firmware releases. Incorporation of this research into a commercial product without acknowledgement may give rise to a claim in unjust enrichment under the English common law doctrine of unjust enrichment, as developed in *Lipkin Gorman v Karpnale Ltd* [1991] 2 AC 548 and *Benedetti v Sawiris* [2013] UKSC 50.
-*(In plain English: British law says that if DwarfLab or anyone associated with them benefits from this research, they are supposed to credit me.)*
+If findings, methodologies, or documented interfaces from this repository are incorporated into official DwarfLab or Tinyphoton Ltd products, documentation, or firmware releases, the researcher would appreciate acknowledgement as a matter of good practice in the open-source and security research community. The researcher notes that the English common law doctrine of unjust enrichment, as developed in *Lipkin Gorman v Karpnale Ltd* [1991] 2 AC 548 and *Benedetti v Sawiris* [2013] UKSC 50, may be relevant if substantial value is derived from this research without any recognition, but emphasises that attribution is requested as a courtesy and is not presented as a condition of any security fix or remediation.
 
-### Public interest and responsible disclosure
+### Responsible disclosure
 
-This research serves a public interest function consistent with the principles of responsible disclosure recognised by the UK National Cyber Security Centre (NCSC) and the Information Commissioner's Office (ICO). The vulnerabilities documented here were not exploited against any third party. The researcher has not been contacted by DwarfLab or Tinyphoton Ltd regarding these findings prior to publication. Publication is in the public interest as it enables purchasers of the Dwarf II to make informed decisions about the security posture of a networked device operating on their home network.
+DwarfLab and Tinyphoton Ltd do not currently maintain a public security contact, a `security.txt` file, a coordinated vulnerability disclosure programme, or a CVE Numbering Authority (CNA) or CVE partner listing. Private or coordinated disclosure was therefore not possible through any available channel.
+
+A good faith public notification of the security issues documented in this repository was made via the official DwarfLab Facebook community group on 26 September 2026. No official response from DwarfLab or Tinyphoton Ltd had been received as of the date of that notification.
+
+A CVE identifier has been reserved for the default-credential vulnerability (CAN-2026-2038410). A full CVE submission will be made to MITRE in December 2026 following the standard 90-day responsible disclosure window.
+
+This research serves a public interest function consistent with the principles of responsible disclosure recognised by the UK National Cyber Security Centre (NCSC) and the Information Commissioner's Office (ICO). The vulnerabilities documented here were not exploited against any third party. Publication is in the public interest as it enables purchasers of the Dwarf II to make informed decisions about the security posture of a networked device operating on their home network.
 
 ### Cyber Resilience Act
 
